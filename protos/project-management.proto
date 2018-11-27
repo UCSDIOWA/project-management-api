@@ -1,0 +1,204 @@
+syntax = "proto3";
+
+package projectManagement;
+
+import "google/api/annotations.proto";
+
+service ProjectManagementAPI {
+    rpc EditProject (EditProjectRequest) returns (EditProjectResponse) {
+        option (google.api.http) = {
+            post: "/editproject"
+            body:   "*"
+        };
+    }
+
+    rpc AddMilestone (AddMilestoneRequest) returns (AddMilestoneResponse) {
+        option (google.api.http) = {
+            post: "/addmilestone"
+            body: "*"
+        };
+    }
+
+    rpc EditMilestone (EditMilestoneRequest) returns (EditMilestoneResponse) {
+        option (google.api.http) = {
+            post: "/editmilestone"
+            body: "*"
+        };
+    }
+
+    rpc DeleteMilestone (DeleteMilestoneRequest) returns (DeleteMilestoneResponse) {
+        option (google.api.http) = {
+            post: "/deletemilestone"
+            body: "*"
+        };
+    }
+
+    rpc MilestoneCompletion (MilestoneCompletionRequest) returns (MilestoneCompletionResponse) {
+        option (google.api.http) = {
+            post: "/milestonecompletion"
+            body: "*"
+        };
+    }
+
+    rpc AddUser (AddUserRequest) returns (AddUserResponse) {
+        option (google.api.http) = {
+            post: "/adduser"
+            body: "*"
+        };
+    }
+
+    rpc RemoveUser (RemoveUserRequest) returns (RemoveUserResponse) {
+        option (google.api.http) = {
+            post: "/removeuser"
+            body: "*"
+        };
+    }
+
+    rpc TransferLeader (TransferLeaderRequest) returns (TransferLeaderResponse){
+        option (google.api.http) = {
+            post: "/transferleader"
+            body: "*"
+        };
+    }
+
+    rpc Announcement (AnnouncementRequest) returns (AnnouncementResponse) {
+        option (google.api.http) = {
+            post: "/announcement"
+            body: "*"
+        };
+    }
+}
+
+message EditProjectRequest {
+    string projectid = 1;
+    string title = 2;
+    string description = 3;
+    string deadline = 4;
+    string size = 5;
+    bool private = 6;
+}
+
+message EditProjectResponse {
+    bool success = 1;
+}
+
+message MilestoneModel {
+    string title = 1;
+    string description = 2;
+    repeated string users =3;
+    int32 weight = 4;
+    bool done = 5;
+}
+
+message ProjectModel {
+    string ProjectID = 1;
+    string title = 2;
+    repeated string Users = 3;
+    string description = 4;
+    string deadline = 5;
+    bool private = 6;
+    repeated string Announcements = 7;
+    int32 size = 8;
+    string project_leader = 9;
+    int32 progress_bar = 10;
+    bool done = 11;
+    string calendar = 12;
+    repeated string Milestones = 13;
+    repeated string Tags = 14;
+    repeated string pendingUsers = 15;
+}
+
+message AddMilestoneRequest {
+    string projectid = 1;
+    string title = 2;
+    string description = 3;
+    repeated string users = 4;
+    int32 weight = 5;
+}
+
+message AddMilestoneResponse {
+    bool success = 1;
+}
+
+message EditMilestoneRequest {
+    string projectid = 1;
+    string title = 2;
+    string description = 3;
+    repeated string users = 4;
+    int32 weight = 5;
+}
+
+message EditMilestoneResponse {
+    bool success = 1;
+}
+
+message DeleteMilestoneRequest {
+    string projectid = 1;
+    string milestoneid = 2;
+}
+
+message DeleteMilestoneResponse {
+    bool success = 1;
+}
+
+message MilestoneCompletionRequest {
+    string projectid = 1;
+    string milestoneid = 2;
+}
+
+message MilestoneCompletionResponse {
+    bool success = 1;
+}
+
+message UserModel {
+    string email = 1;
+    string password = 2;
+    string first_name = 3;
+    string last_name = 4;
+
+    message SecretCode {
+        string value = 1;
+        bool sent = 2;
+    }
+
+    SecretCode secret_code = 5;
+    repeated string current_projects = 6;
+    repeated string previous_projects = 7;
+}
+
+message AddUserRequest {
+    string projectid = 1;
+    string useremail = 2;
+}
+
+message AddUserResponse {
+    bool success = 1;
+}
+
+message RemoveUserRequest {
+    string projectid = 1;
+    string useremail = 2;
+}
+
+message RemoveUserResponse {
+    bool success = 1;
+}
+
+message TransferLeaderRequest {
+    string projectid = 1;
+    string new_leader = 2;
+}
+
+message TransferLeaderResponse {
+    bool success = 1;
+}
+
+message AnnouncementRequest {
+    string projectid = 1;
+    string title = 2;
+    string description = 3;
+}
+
+message AnnouncementResponse {
+    bool success = 1;
+}
