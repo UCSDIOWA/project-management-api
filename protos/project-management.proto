@@ -5,13 +5,6 @@ package projectManagement;
 import "google/api/annotations.proto";
 
 service ProjectManagementAPI {
-    rpc EditProject (EditProjectRequest) returns (EditProjectResponse) {
-        option (google.api.http) = {
-            post: "/editproject"
-            body:   "*"
-        };
-    }
-
     rpc AddMilestone (AddMilestoneRequest) returns (AddMilestoneResponse) {
         option (google.api.http) = {
             post: "/addmilestone"
@@ -69,43 +62,13 @@ service ProjectManagementAPI {
     }
 }
 
-message EditProjectRequest {
-    string projectid = 1;
+message MilestoneModel {
+    string xid = 1;
     string title = 2;
     string description = 3;
-    string deadline = 4;
-    string size = 5;
-    bool private = 6;
-}
-
-message EditProjectResponse {
-    bool success = 1;
-}
-
-message MilestoneModel {
-    string title = 1;
-    string description = 2;
-    repeated string users =3;
-    int32 weight = 4;
-    bool done = 5;
-}
-
-message ProjectModel {
-    string ProjectID = 1;
-    string title = 2;
-    repeated string Users = 3;
-    string description = 4;
-    string deadline = 5;
-    bool private = 6;
-    repeated string Announcements = 7;
-    int32 size = 8;
-    string project_leader = 9;
-    int32 progress_bar = 10;
-    bool done = 11;
-    string calendar = 12;
-    repeated string Milestones = 13;
-    repeated string Tags = 14;
-    repeated string pendingUsers = 15;
+    repeated string users =4;
+    int32 weight = 5;
+    bool done = 6;
 }
 
 message AddMilestoneRequest {
@@ -121,11 +84,12 @@ message AddMilestoneResponse {
 }
 
 message EditMilestoneRequest {
-    string projectid = 1;
-    string title = 2;
-    string description = 3;
-    repeated string users = 4;
-    int32 weight = 5;
+    string milestoneid = 1;
+    string projectid = 2;
+    string title = 3;
+    string description = 4;
+    repeated string users = 5;
+    int32 weight = 6;
 }
 
 message EditMilestoneResponse {
@@ -148,22 +112,6 @@ message MilestoneCompletionRequest {
 
 message MilestoneCompletionResponse {
     bool success = 1;
-}
-
-message UserModel {
-    string email = 1;
-    string password = 2;
-    string first_name = 3;
-    string last_name = 4;
-
-    message SecretCode {
-        string value = 1;
-        bool sent = 2;
-    }
-
-    SecretCode secret_code = 5;
-    repeated string current_projects = 6;
-    repeated string previous_projects = 7;
 }
 
 message AddUserRequest {
@@ -195,8 +143,9 @@ message TransferLeaderResponse {
 
 message AnnouncementRequest {
     string projectid = 1;
-    string title = 2;
-    string description = 3;
+    string announcementid = 2;
+    string title = 3;
+    string description = 4;
 }
 
 message AnnouncementResponse {

@@ -23,130 +23,13 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-type EditProjectRequest struct {
-	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
+type MilestoneModel struct {
+	Xid                  string   `protobuf:"bytes,1,opt,name=xid,proto3" json:"xid,omitempty"`
 	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
 	Description          string   `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Deadline             string   `protobuf:"bytes,4,opt,name=deadline,proto3" json:"deadline,omitempty"`
-	Size                 string   `protobuf:"bytes,5,opt,name=size,proto3" json:"size,omitempty"`
-	Private              bool     `protobuf:"varint,6,opt,name=private,proto3" json:"private,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *EditProjectRequest) Reset()         { *m = EditProjectRequest{} }
-func (m *EditProjectRequest) String() string { return proto.CompactTextString(m) }
-func (*EditProjectRequest) ProtoMessage()    {}
-func (*EditProjectRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{0}
-}
-
-func (m *EditProjectRequest) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EditProjectRequest.Unmarshal(m, b)
-}
-func (m *EditProjectRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EditProjectRequest.Marshal(b, m, deterministic)
-}
-func (m *EditProjectRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EditProjectRequest.Merge(m, src)
-}
-func (m *EditProjectRequest) XXX_Size() int {
-	return xxx_messageInfo_EditProjectRequest.Size(m)
-}
-func (m *EditProjectRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_EditProjectRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EditProjectRequest proto.InternalMessageInfo
-
-func (m *EditProjectRequest) GetProjectid() string {
-	if m != nil {
-		return m.Projectid
-	}
-	return ""
-}
-
-func (m *EditProjectRequest) GetTitle() string {
-	if m != nil {
-		return m.Title
-	}
-	return ""
-}
-
-func (m *EditProjectRequest) GetDescription() string {
-	if m != nil {
-		return m.Description
-	}
-	return ""
-}
-
-func (m *EditProjectRequest) GetDeadline() string {
-	if m != nil {
-		return m.Deadline
-	}
-	return ""
-}
-
-func (m *EditProjectRequest) GetSize() string {
-	if m != nil {
-		return m.Size
-	}
-	return ""
-}
-
-func (m *EditProjectRequest) GetPrivate() bool {
-	if m != nil {
-		return m.Private
-	}
-	return false
-}
-
-type EditProjectResponse struct {
-	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *EditProjectResponse) Reset()         { *m = EditProjectResponse{} }
-func (m *EditProjectResponse) String() string { return proto.CompactTextString(m) }
-func (*EditProjectResponse) ProtoMessage()    {}
-func (*EditProjectResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{1}
-}
-
-func (m *EditProjectResponse) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_EditProjectResponse.Unmarshal(m, b)
-}
-func (m *EditProjectResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_EditProjectResponse.Marshal(b, m, deterministic)
-}
-func (m *EditProjectResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EditProjectResponse.Merge(m, src)
-}
-func (m *EditProjectResponse) XXX_Size() int {
-	return xxx_messageInfo_EditProjectResponse.Size(m)
-}
-func (m *EditProjectResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_EditProjectResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_EditProjectResponse proto.InternalMessageInfo
-
-func (m *EditProjectResponse) GetSuccess() bool {
-	if m != nil {
-		return m.Success
-	}
-	return false
-}
-
-type MilestoneModel struct {
-	Title                string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Description          string   `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	Users                []string `protobuf:"bytes,3,rep,name=users,proto3" json:"users,omitempty"`
-	Weight               int32    `protobuf:"varint,4,opt,name=weight,proto3" json:"weight,omitempty"`
-	Done                 bool     `protobuf:"varint,5,opt,name=done,proto3" json:"done,omitempty"`
+	Users                []string `protobuf:"bytes,4,rep,name=users,proto3" json:"users,omitempty"`
+	Weight               int32    `protobuf:"varint,5,opt,name=weight,proto3" json:"weight,omitempty"`
+	Done                 bool     `protobuf:"varint,6,opt,name=done,proto3" json:"done,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -156,7 +39,7 @@ func (m *MilestoneModel) Reset()         { *m = MilestoneModel{} }
 func (m *MilestoneModel) String() string { return proto.CompactTextString(m) }
 func (*MilestoneModel) ProtoMessage()    {}
 func (*MilestoneModel) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{2}
+	return fileDescriptor_73530e506fe37ed3, []int{0}
 }
 
 func (m *MilestoneModel) XXX_Unmarshal(b []byte) error {
@@ -176,6 +59,13 @@ func (m *MilestoneModel) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_MilestoneModel proto.InternalMessageInfo
+
+func (m *MilestoneModel) GetXid() string {
+	if m != nil {
+		return m.Xid
+	}
+	return ""
+}
 
 func (m *MilestoneModel) GetTitle() string {
 	if m != nil {
@@ -212,157 +102,6 @@ func (m *MilestoneModel) GetDone() bool {
 	return false
 }
 
-type ProjectModel struct {
-	ProjectID            string   `protobuf:"bytes,1,opt,name=ProjectID,proto3" json:"ProjectID,omitempty"`
-	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Users                []string `protobuf:"bytes,3,rep,name=Users,proto3" json:"Users,omitempty"`
-	Description          string   `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
-	Deadline             string   `protobuf:"bytes,5,opt,name=deadline,proto3" json:"deadline,omitempty"`
-	Private              bool     `protobuf:"varint,6,opt,name=private,proto3" json:"private,omitempty"`
-	Announcements        []string `protobuf:"bytes,7,rep,name=Announcements,proto3" json:"Announcements,omitempty"`
-	Size                 int32    `protobuf:"varint,8,opt,name=size,proto3" json:"size,omitempty"`
-	ProjectLeader        string   `protobuf:"bytes,9,opt,name=project_leader,json=projectLeader,proto3" json:"project_leader,omitempty"`
-	ProgressBar          int32    `protobuf:"varint,10,opt,name=progress_bar,json=progressBar,proto3" json:"progress_bar,omitempty"`
-	Done                 bool     `protobuf:"varint,11,opt,name=done,proto3" json:"done,omitempty"`
-	Calendar             string   `protobuf:"bytes,12,opt,name=calendar,proto3" json:"calendar,omitempty"`
-	Milestones           []string `protobuf:"bytes,13,rep,name=Milestones,proto3" json:"Milestones,omitempty"`
-	Tags                 []string `protobuf:"bytes,14,rep,name=Tags,proto3" json:"Tags,omitempty"`
-	PendingUsers         []string `protobuf:"bytes,15,rep,name=pendingUsers,proto3" json:"pendingUsers,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *ProjectModel) Reset()         { *m = ProjectModel{} }
-func (m *ProjectModel) String() string { return proto.CompactTextString(m) }
-func (*ProjectModel) ProtoMessage()    {}
-func (*ProjectModel) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{3}
-}
-
-func (m *ProjectModel) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ProjectModel.Unmarshal(m, b)
-}
-func (m *ProjectModel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ProjectModel.Marshal(b, m, deterministic)
-}
-func (m *ProjectModel) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ProjectModel.Merge(m, src)
-}
-func (m *ProjectModel) XXX_Size() int {
-	return xxx_messageInfo_ProjectModel.Size(m)
-}
-func (m *ProjectModel) XXX_DiscardUnknown() {
-	xxx_messageInfo_ProjectModel.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ProjectModel proto.InternalMessageInfo
-
-func (m *ProjectModel) GetProjectID() string {
-	if m != nil {
-		return m.ProjectID
-	}
-	return ""
-}
-
-func (m *ProjectModel) GetTitle() string {
-	if m != nil {
-		return m.Title
-	}
-	return ""
-}
-
-func (m *ProjectModel) GetUsers() []string {
-	if m != nil {
-		return m.Users
-	}
-	return nil
-}
-
-func (m *ProjectModel) GetDescription() string {
-	if m != nil {
-		return m.Description
-	}
-	return ""
-}
-
-func (m *ProjectModel) GetDeadline() string {
-	if m != nil {
-		return m.Deadline
-	}
-	return ""
-}
-
-func (m *ProjectModel) GetPrivate() bool {
-	if m != nil {
-		return m.Private
-	}
-	return false
-}
-
-func (m *ProjectModel) GetAnnouncements() []string {
-	if m != nil {
-		return m.Announcements
-	}
-	return nil
-}
-
-func (m *ProjectModel) GetSize() int32 {
-	if m != nil {
-		return m.Size
-	}
-	return 0
-}
-
-func (m *ProjectModel) GetProjectLeader() string {
-	if m != nil {
-		return m.ProjectLeader
-	}
-	return ""
-}
-
-func (m *ProjectModel) GetProgressBar() int32 {
-	if m != nil {
-		return m.ProgressBar
-	}
-	return 0
-}
-
-func (m *ProjectModel) GetDone() bool {
-	if m != nil {
-		return m.Done
-	}
-	return false
-}
-
-func (m *ProjectModel) GetCalendar() string {
-	if m != nil {
-		return m.Calendar
-	}
-	return ""
-}
-
-func (m *ProjectModel) GetMilestones() []string {
-	if m != nil {
-		return m.Milestones
-	}
-	return nil
-}
-
-func (m *ProjectModel) GetTags() []string {
-	if m != nil {
-		return m.Tags
-	}
-	return nil
-}
-
-func (m *ProjectModel) GetPendingUsers() []string {
-	if m != nil {
-		return m.PendingUsers
-	}
-	return nil
-}
-
 type AddMilestoneRequest struct {
 	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
 	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
@@ -378,7 +117,7 @@ func (m *AddMilestoneRequest) Reset()         { *m = AddMilestoneRequest{} }
 func (m *AddMilestoneRequest) String() string { return proto.CompactTextString(m) }
 func (*AddMilestoneRequest) ProtoMessage()    {}
 func (*AddMilestoneRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{4}
+	return fileDescriptor_73530e506fe37ed3, []int{1}
 }
 
 func (m *AddMilestoneRequest) XXX_Unmarshal(b []byte) error {
@@ -445,7 +184,7 @@ func (m *AddMilestoneResponse) Reset()         { *m = AddMilestoneResponse{} }
 func (m *AddMilestoneResponse) String() string { return proto.CompactTextString(m) }
 func (*AddMilestoneResponse) ProtoMessage()    {}
 func (*AddMilestoneResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{5}
+	return fileDescriptor_73530e506fe37ed3, []int{2}
 }
 
 func (m *AddMilestoneResponse) XXX_Unmarshal(b []byte) error {
@@ -474,11 +213,12 @@ func (m *AddMilestoneResponse) GetSuccess() bool {
 }
 
 type EditMilestoneRequest struct {
-	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
-	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Description          string   `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	Users                []string `protobuf:"bytes,4,rep,name=users,proto3" json:"users,omitempty"`
-	Weight               int32    `protobuf:"varint,5,opt,name=weight,proto3" json:"weight,omitempty"`
+	Milestoneid          string   `protobuf:"bytes,1,opt,name=milestoneid,proto3" json:"milestoneid,omitempty"`
+	Projectid            string   `protobuf:"bytes,2,opt,name=projectid,proto3" json:"projectid,omitempty"`
+	Title                string   `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Description          string   `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Users                []string `protobuf:"bytes,5,rep,name=users,proto3" json:"users,omitempty"`
+	Weight               int32    `protobuf:"varint,6,opt,name=weight,proto3" json:"weight,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -488,7 +228,7 @@ func (m *EditMilestoneRequest) Reset()         { *m = EditMilestoneRequest{} }
 func (m *EditMilestoneRequest) String() string { return proto.CompactTextString(m) }
 func (*EditMilestoneRequest) ProtoMessage()    {}
 func (*EditMilestoneRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{6}
+	return fileDescriptor_73530e506fe37ed3, []int{3}
 }
 
 func (m *EditMilestoneRequest) XXX_Unmarshal(b []byte) error {
@@ -508,6 +248,13 @@ func (m *EditMilestoneRequest) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_EditMilestoneRequest proto.InternalMessageInfo
+
+func (m *EditMilestoneRequest) GetMilestoneid() string {
+	if m != nil {
+		return m.Milestoneid
+	}
+	return ""
+}
 
 func (m *EditMilestoneRequest) GetProjectid() string {
 	if m != nil {
@@ -555,7 +302,7 @@ func (m *EditMilestoneResponse) Reset()         { *m = EditMilestoneResponse{} }
 func (m *EditMilestoneResponse) String() string { return proto.CompactTextString(m) }
 func (*EditMilestoneResponse) ProtoMessage()    {}
 func (*EditMilestoneResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{7}
+	return fileDescriptor_73530e506fe37ed3, []int{4}
 }
 
 func (m *EditMilestoneResponse) XXX_Unmarshal(b []byte) error {
@@ -595,7 +342,7 @@ func (m *DeleteMilestoneRequest) Reset()         { *m = DeleteMilestoneRequest{}
 func (m *DeleteMilestoneRequest) String() string { return proto.CompactTextString(m) }
 func (*DeleteMilestoneRequest) ProtoMessage()    {}
 func (*DeleteMilestoneRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{8}
+	return fileDescriptor_73530e506fe37ed3, []int{5}
 }
 
 func (m *DeleteMilestoneRequest) XXX_Unmarshal(b []byte) error {
@@ -641,7 +388,7 @@ func (m *DeleteMilestoneResponse) Reset()         { *m = DeleteMilestoneResponse
 func (m *DeleteMilestoneResponse) String() string { return proto.CompactTextString(m) }
 func (*DeleteMilestoneResponse) ProtoMessage()    {}
 func (*DeleteMilestoneResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{9}
+	return fileDescriptor_73530e506fe37ed3, []int{6}
 }
 
 func (m *DeleteMilestoneResponse) XXX_Unmarshal(b []byte) error {
@@ -681,7 +428,7 @@ func (m *MilestoneCompletionRequest) Reset()         { *m = MilestoneCompletionR
 func (m *MilestoneCompletionRequest) String() string { return proto.CompactTextString(m) }
 func (*MilestoneCompletionRequest) ProtoMessage()    {}
 func (*MilestoneCompletionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{10}
+	return fileDescriptor_73530e506fe37ed3, []int{7}
 }
 
 func (m *MilestoneCompletionRequest) XXX_Unmarshal(b []byte) error {
@@ -727,7 +474,7 @@ func (m *MilestoneCompletionResponse) Reset()         { *m = MilestoneCompletion
 func (m *MilestoneCompletionResponse) String() string { return proto.CompactTextString(m) }
 func (*MilestoneCompletionResponse) ProtoMessage()    {}
 func (*MilestoneCompletionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{11}
+	return fileDescriptor_73530e506fe37ed3, []int{8}
 }
 
 func (m *MilestoneCompletionResponse) XXX_Unmarshal(b []byte) error {
@@ -755,140 +502,6 @@ func (m *MilestoneCompletionResponse) GetSuccess() bool {
 	return false
 }
 
-type UserModel struct {
-	Email                string                `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	Password             string                `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	FirstName            string                `protobuf:"bytes,3,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
-	LastName             string                `protobuf:"bytes,4,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
-	SecretCode           *UserModel_SecretCode `protobuf:"bytes,5,opt,name=secret_code,json=secretCode,proto3" json:"secret_code,omitempty"`
-	CurrentProjects      []string              `protobuf:"bytes,6,rep,name=current_projects,json=currentProjects,proto3" json:"current_projects,omitempty"`
-	PreviousProjects     []string              `protobuf:"bytes,7,rep,name=previous_projects,json=previousProjects,proto3" json:"previous_projects,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}              `json:"-"`
-	XXX_unrecognized     []byte                `json:"-"`
-	XXX_sizecache        int32                 `json:"-"`
-}
-
-func (m *UserModel) Reset()         { *m = UserModel{} }
-func (m *UserModel) String() string { return proto.CompactTextString(m) }
-func (*UserModel) ProtoMessage()    {}
-func (*UserModel) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{12}
-}
-
-func (m *UserModel) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UserModel.Unmarshal(m, b)
-}
-func (m *UserModel) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UserModel.Marshal(b, m, deterministic)
-}
-func (m *UserModel) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UserModel.Merge(m, src)
-}
-func (m *UserModel) XXX_Size() int {
-	return xxx_messageInfo_UserModel.Size(m)
-}
-func (m *UserModel) XXX_DiscardUnknown() {
-	xxx_messageInfo_UserModel.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UserModel proto.InternalMessageInfo
-
-func (m *UserModel) GetEmail() string {
-	if m != nil {
-		return m.Email
-	}
-	return ""
-}
-
-func (m *UserModel) GetPassword() string {
-	if m != nil {
-		return m.Password
-	}
-	return ""
-}
-
-func (m *UserModel) GetFirstName() string {
-	if m != nil {
-		return m.FirstName
-	}
-	return ""
-}
-
-func (m *UserModel) GetLastName() string {
-	if m != nil {
-		return m.LastName
-	}
-	return ""
-}
-
-func (m *UserModel) GetSecretCode() *UserModel_SecretCode {
-	if m != nil {
-		return m.SecretCode
-	}
-	return nil
-}
-
-func (m *UserModel) GetCurrentProjects() []string {
-	if m != nil {
-		return m.CurrentProjects
-	}
-	return nil
-}
-
-func (m *UserModel) GetPreviousProjects() []string {
-	if m != nil {
-		return m.PreviousProjects
-	}
-	return nil
-}
-
-type UserModel_SecretCode struct {
-	Value                string   `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
-	Sent                 bool     `protobuf:"varint,2,opt,name=sent,proto3" json:"sent,omitempty"`
-	XXX_NoUnkeyedLiteral struct{} `json:"-"`
-	XXX_unrecognized     []byte   `json:"-"`
-	XXX_sizecache        int32    `json:"-"`
-}
-
-func (m *UserModel_SecretCode) Reset()         { *m = UserModel_SecretCode{} }
-func (m *UserModel_SecretCode) String() string { return proto.CompactTextString(m) }
-func (*UserModel_SecretCode) ProtoMessage()    {}
-func (*UserModel_SecretCode) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{12, 0}
-}
-
-func (m *UserModel_SecretCode) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_UserModel_SecretCode.Unmarshal(m, b)
-}
-func (m *UserModel_SecretCode) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_UserModel_SecretCode.Marshal(b, m, deterministic)
-}
-func (m *UserModel_SecretCode) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_UserModel_SecretCode.Merge(m, src)
-}
-func (m *UserModel_SecretCode) XXX_Size() int {
-	return xxx_messageInfo_UserModel_SecretCode.Size(m)
-}
-func (m *UserModel_SecretCode) XXX_DiscardUnknown() {
-	xxx_messageInfo_UserModel_SecretCode.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_UserModel_SecretCode proto.InternalMessageInfo
-
-func (m *UserModel_SecretCode) GetValue() string {
-	if m != nil {
-		return m.Value
-	}
-	return ""
-}
-
-func (m *UserModel_SecretCode) GetSent() bool {
-	if m != nil {
-		return m.Sent
-	}
-	return false
-}
-
 type AddUserRequest struct {
 	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
 	Useremail            string   `protobuf:"bytes,2,opt,name=useremail,proto3" json:"useremail,omitempty"`
@@ -901,7 +514,7 @@ func (m *AddUserRequest) Reset()         { *m = AddUserRequest{} }
 func (m *AddUserRequest) String() string { return proto.CompactTextString(m) }
 func (*AddUserRequest) ProtoMessage()    {}
 func (*AddUserRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{13}
+	return fileDescriptor_73530e506fe37ed3, []int{9}
 }
 
 func (m *AddUserRequest) XXX_Unmarshal(b []byte) error {
@@ -947,7 +560,7 @@ func (m *AddUserResponse) Reset()         { *m = AddUserResponse{} }
 func (m *AddUserResponse) String() string { return proto.CompactTextString(m) }
 func (*AddUserResponse) ProtoMessage()    {}
 func (*AddUserResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{14}
+	return fileDescriptor_73530e506fe37ed3, []int{10}
 }
 
 func (m *AddUserResponse) XXX_Unmarshal(b []byte) error {
@@ -987,7 +600,7 @@ func (m *RemoveUserRequest) Reset()         { *m = RemoveUserRequest{} }
 func (m *RemoveUserRequest) String() string { return proto.CompactTextString(m) }
 func (*RemoveUserRequest) ProtoMessage()    {}
 func (*RemoveUserRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{15}
+	return fileDescriptor_73530e506fe37ed3, []int{11}
 }
 
 func (m *RemoveUserRequest) XXX_Unmarshal(b []byte) error {
@@ -1033,7 +646,7 @@ func (m *RemoveUserResponse) Reset()         { *m = RemoveUserResponse{} }
 func (m *RemoveUserResponse) String() string { return proto.CompactTextString(m) }
 func (*RemoveUserResponse) ProtoMessage()    {}
 func (*RemoveUserResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{16}
+	return fileDescriptor_73530e506fe37ed3, []int{12}
 }
 
 func (m *RemoveUserResponse) XXX_Unmarshal(b []byte) error {
@@ -1073,7 +686,7 @@ func (m *TransferLeaderRequest) Reset()         { *m = TransferLeaderRequest{} }
 func (m *TransferLeaderRequest) String() string { return proto.CompactTextString(m) }
 func (*TransferLeaderRequest) ProtoMessage()    {}
 func (*TransferLeaderRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{17}
+	return fileDescriptor_73530e506fe37ed3, []int{13}
 }
 
 func (m *TransferLeaderRequest) XXX_Unmarshal(b []byte) error {
@@ -1119,7 +732,7 @@ func (m *TransferLeaderResponse) Reset()         { *m = TransferLeaderResponse{}
 func (m *TransferLeaderResponse) String() string { return proto.CompactTextString(m) }
 func (*TransferLeaderResponse) ProtoMessage()    {}
 func (*TransferLeaderResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{18}
+	return fileDescriptor_73530e506fe37ed3, []int{14}
 }
 
 func (m *TransferLeaderResponse) XXX_Unmarshal(b []byte) error {
@@ -1149,8 +762,9 @@ func (m *TransferLeaderResponse) GetSuccess() bool {
 
 type AnnouncementRequest struct {
 	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
-	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
-	Description          string   `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Announcementid       string   `protobuf:"bytes,2,opt,name=announcementid,proto3" json:"announcementid,omitempty"`
+	Title                string   `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Description          string   `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -1160,7 +774,7 @@ func (m *AnnouncementRequest) Reset()         { *m = AnnouncementRequest{} }
 func (m *AnnouncementRequest) String() string { return proto.CompactTextString(m) }
 func (*AnnouncementRequest) ProtoMessage()    {}
 func (*AnnouncementRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{19}
+	return fileDescriptor_73530e506fe37ed3, []int{15}
 }
 
 func (m *AnnouncementRequest) XXX_Unmarshal(b []byte) error {
@@ -1184,6 +798,13 @@ var xxx_messageInfo_AnnouncementRequest proto.InternalMessageInfo
 func (m *AnnouncementRequest) GetProjectid() string {
 	if m != nil {
 		return m.Projectid
+	}
+	return ""
+}
+
+func (m *AnnouncementRequest) GetAnnouncementid() string {
+	if m != nil {
+		return m.Announcementid
 	}
 	return ""
 }
@@ -1213,7 +834,7 @@ func (m *AnnouncementResponse) Reset()         { *m = AnnouncementResponse{} }
 func (m *AnnouncementResponse) String() string { return proto.CompactTextString(m) }
 func (*AnnouncementResponse) ProtoMessage()    {}
 func (*AnnouncementResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{20}
+	return fileDescriptor_73530e506fe37ed3, []int{16}
 }
 
 func (m *AnnouncementResponse) XXX_Unmarshal(b []byte) error {
@@ -1242,10 +863,7 @@ func (m *AnnouncementResponse) GetSuccess() bool {
 }
 
 func init() {
-	proto.RegisterType((*EditProjectRequest)(nil), "projectManagement.EditProjectRequest")
-	proto.RegisterType((*EditProjectResponse)(nil), "projectManagement.EditProjectResponse")
 	proto.RegisterType((*MilestoneModel)(nil), "projectManagement.MilestoneModel")
-	proto.RegisterType((*ProjectModel)(nil), "projectManagement.ProjectModel")
 	proto.RegisterType((*AddMilestoneRequest)(nil), "projectManagement.AddMilestoneRequest")
 	proto.RegisterType((*AddMilestoneResponse)(nil), "projectManagement.AddMilestoneResponse")
 	proto.RegisterType((*EditMilestoneRequest)(nil), "projectManagement.EditMilestoneRequest")
@@ -1254,8 +872,6 @@ func init() {
 	proto.RegisterType((*DeleteMilestoneResponse)(nil), "projectManagement.DeleteMilestoneResponse")
 	proto.RegisterType((*MilestoneCompletionRequest)(nil), "projectManagement.MilestoneCompletionRequest")
 	proto.RegisterType((*MilestoneCompletionResponse)(nil), "projectManagement.MilestoneCompletionResponse")
-	proto.RegisterType((*UserModel)(nil), "projectManagement.UserModel")
-	proto.RegisterType((*UserModel_SecretCode)(nil), "projectManagement.UserModel.SecretCode")
 	proto.RegisterType((*AddUserRequest)(nil), "projectManagement.AddUserRequest")
 	proto.RegisterType((*AddUserResponse)(nil), "projectManagement.AddUserResponse")
 	proto.RegisterType((*RemoveUserRequest)(nil), "projectManagement.RemoveUserRequest")
@@ -1269,75 +885,53 @@ func init() {
 func init() { proto.RegisterFile("protos/project-management.proto", fileDescriptor_73530e506fe37ed3) }
 
 var fileDescriptor_73530e506fe37ed3 = []byte{
-	// 1087 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x57, 0xdd, 0x6e, 0x1b, 0x45,
-	0x14, 0xd6, 0x26, 0x71, 0x62, 0x1f, 0xff, 0x24, 0x19, 0x3b, 0xe9, 0x76, 0x93, 0xd2, 0x74, 0xd4,
-	0x90, 0x9f, 0xaa, 0x36, 0xa4, 0x12, 0x48, 0xbd, 0x0b, 0x2d, 0x12, 0x95, 0x1a, 0x88, 0x4c, 0x90,
-	0xb8, 0x40, 0x8a, 0xa6, 0x9e, 0x53, 0xb3, 0xb0, 0x9e, 0xdd, 0xee, 0xac, 0x13, 0x81, 0x84, 0x04,
-	0x48, 0xdc, 0x70, 0x8b, 0xb8, 0x80, 0xe7, 0xe0, 0x92, 0xb7, 0xe8, 0x2b, 0xf0, 0x20, 0x68, 0xcf,
-	0xce, 0xae, 0xd7, 0xf6, 0x26, 0x1b, 0xa4, 0x56, 0xe2, 0x6e, 0xcf, 0xcf, 0x9c, 0xef, 0x3b, 0x67,
-	0x66, 0xbe, 0xb1, 0xe1, 0x6e, 0x10, 0xfa, 0x91, 0xaf, 0x7b, 0x41, 0xe8, 0x7f, 0x83, 0x83, 0xe8,
-	0xe1, 0x48, 0x28, 0x31, 0xc4, 0x11, 0xaa, 0xa8, 0x4b, 0x11, 0xb6, 0x6e, 0x22, 0x27, 0x59, 0xc0,
-	0xd9, 0x1e, 0xfa, 0xfe, 0xd0, 0xc3, 0x9e, 0x08, 0xdc, 0x9e, 0x50, 0xca, 0x8f, 0x44, 0xe4, 0xfa,
-	0x4a, 0x27, 0x0b, 0xf8, 0x5f, 0x16, 0xb0, 0x8f, 0xa5, 0x1b, 0x9d, 0x26, 0xeb, 0xfa, 0xf8, 0x6a,
-	0x8c, 0x3a, 0x62, 0xdb, 0x50, 0x33, 0x95, 0x5c, 0x69, 0x5b, 0x3b, 0xd6, 0x7e, 0xad, 0x3f, 0x71,
-	0xb0, 0x0e, 0x54, 0x22, 0x37, 0xf2, 0xd0, 0x5e, 0xa0, 0x48, 0x62, 0xb0, 0x1d, 0xa8, 0x4b, 0xd4,
-	0x83, 0xd0, 0x0d, 0x62, 0x00, 0x7b, 0x91, 0x62, 0x79, 0x17, 0x73, 0xa0, 0x2a, 0x51, 0x48, 0xcf,
-	0x55, 0x68, 0x2f, 0x51, 0x38, 0xb3, 0x19, 0x83, 0x25, 0xed, 0x7e, 0x8f, 0x76, 0x85, 0xfc, 0xf4,
-	0xcd, 0x6c, 0x58, 0x09, 0x42, 0xf7, 0x42, 0x44, 0x68, 0x2f, 0xef, 0x58, 0xfb, 0xd5, 0x7e, 0x6a,
-	0xf2, 0x1e, 0xb4, 0xa7, 0x58, 0xeb, 0xc0, 0x57, 0x9a, 0x16, 0xe8, 0xf1, 0x60, 0x80, 0x5a, 0x13,
-	0xe9, 0x6a, 0x3f, 0x35, 0xf9, 0xaf, 0x16, 0xb4, 0x4e, 0x5c, 0x0f, 0x75, 0xe4, 0x2b, 0x3c, 0xf1,
-	0x25, 0x7a, 0x93, 0x2e, 0xac, 0x6b, 0xba, 0x58, 0x98, 0xef, 0xa2, 0x03, 0x95, 0xb1, 0xc6, 0x50,
-	0xdb, 0x8b, 0x3b, 0x8b, 0xf1, 0x3a, 0x32, 0xd8, 0x26, 0x2c, 0x5f, 0xa2, 0x3b, 0xfc, 0x3a, 0xa2,
-	0xce, 0x2a, 0x7d, 0x63, 0xc5, 0x7d, 0x49, 0x5f, 0x25, 0x7d, 0x55, 0xfb, 0xf4, 0xcd, 0xff, 0x5e,
-	0x84, 0x86, 0xa1, 0x9e, 0x50, 0xd9, 0x86, 0x9a, 0xb1, 0x9f, 0x3d, 0x4d, 0xc7, 0x9d, 0x39, 0xae,
-	0x18, 0x77, 0x07, 0x2a, 0x5f, 0xe4, 0x69, 0x90, 0x31, 0x4b, 0x7f, 0xe9, 0xfa, 0x4d, 0xa8, 0xcc,
-	0x6c, 0xc2, 0x95, 0x03, 0x67, 0xf7, 0xa1, 0x79, 0xac, 0x94, 0x3f, 0x56, 0x03, 0x3a, 0x55, 0xda,
-	0x5e, 0x21, 0xd4, 0x69, 0x67, 0xb6, 0x89, 0x55, 0x1a, 0x41, 0xb2, 0x89, 0xbb, 0xd0, 0x32, 0x27,
-	0xe7, 0xdc, 0x43, 0x21, 0x31, 0xb4, 0x6b, 0x84, 0xda, 0x34, 0xde, 0xe7, 0xe4, 0x64, 0xf7, 0xa0,
-	0x11, 0x84, 0xfe, 0x30, 0x44, 0xad, 0xcf, 0x5f, 0x88, 0xd0, 0x06, 0x2a, 0x51, 0x4f, 0x7d, 0x1f,
-	0x89, 0x30, 0x1b, 0x65, 0x7d, 0x32, 0xca, 0xb8, 0x9b, 0x81, 0xf0, 0x50, 0x49, 0x11, 0xda, 0x8d,
-	0xa4, 0x9b, 0xd4, 0x66, 0xef, 0x00, 0x64, 0x5b, 0xae, 0xed, 0x26, 0x11, 0xce, 0x79, 0xe2, 0x7a,
-	0x67, 0x62, 0xa8, 0xed, 0x16, 0x45, 0xe8, 0x9b, 0x71, 0x68, 0x04, 0xa8, 0xa4, 0xab, 0x86, 0xc9,
-	0x70, 0x57, 0x29, 0x36, 0xe5, 0xe3, 0x7f, 0x58, 0xd0, 0x3e, 0x96, 0x32, 0xab, 0xf4, 0x76, 0x2f,
-	0x4d, 0x76, 0xdc, 0x96, 0x8a, 0x8f, 0x5b, 0x25, 0x7f, 0xdc, 0xf8, 0x7b, 0xd0, 0x99, 0xa6, 0x56,
-	0x7a, 0x33, 0xfe, 0xb4, 0xa0, 0x13, 0xdf, 0xa5, 0xff, 0x65, 0x3b, 0xef, 0xc3, 0xc6, 0x0c, 0xb7,
-	0xd2, 0x7e, 0xbe, 0x84, 0xcd, 0xa7, 0xe8, 0x61, 0x84, 0xff, 0xb1, 0xa1, 0x1d, 0xa8, 0x8f, 0xd2,
-	0x15, 0xae, 0x4c, 0x2f, 0x7e, 0xce, 0xc5, 0x1f, 0xc1, 0xad, 0xb9, 0xca, 0xa5, 0x74, 0xbe, 0x02,
-	0x27, 0x4b, 0x7f, 0xe2, 0x8f, 0x02, 0x0f, 0xe3, 0x31, 0xbc, 0x29, 0x4a, 0x1f, 0xc2, 0x56, 0x61,
-	0xf5, 0x52, 0x5a, 0xaf, 0x17, 0xa0, 0x16, 0x9f, 0xe6, 0x4c, 0x0a, 0x71, 0x24, 0x5c, 0x2f, 0x95,
-	0x42, 0x32, 0xe2, 0xbb, 0x15, 0x08, 0xad, 0x2f, 0xfd, 0x30, 0xc5, 0xce, 0x6c, 0x76, 0x07, 0xe0,
-	0xa5, 0x1b, 0xea, 0xe8, 0x5c, 0x89, 0x11, 0x9a, 0x7d, 0xae, 0x91, 0xe7, 0x53, 0x31, 0x42, 0xb6,
-	0x05, 0x35, 0x4f, 0xa4, 0x51, 0x23, 0xf5, 0xb1, 0x83, 0x82, 0x9f, 0x40, 0x5d, 0xe3, 0x20, 0xc4,
-	0xe8, 0x7c, 0xe0, 0xcb, 0x44, 0x84, 0xea, 0x47, 0x7b, 0xdd, 0xb9, 0xa7, 0xab, 0x9b, 0x11, 0xec,
-	0x7e, 0x4e, 0xf9, 0x4f, 0x7c, 0x89, 0x7d, 0xd0, 0xd9, 0x37, 0x3b, 0x80, 0xb5, 0xc1, 0x38, 0x0c,
-	0x51, 0x45, 0xe7, 0x66, 0xb5, 0xb6, 0x97, 0xe9, 0x5c, 0xad, 0x1a, 0xbf, 0x51, 0x51, 0xcd, 0x1e,
-	0xc0, 0x7a, 0x10, 0xe2, 0x85, 0xeb, 0x8f, 0xf5, 0x24, 0x37, 0x11, 0xb1, 0xb5, 0x34, 0x90, 0x26,
-	0x3b, 0x1f, 0x00, 0x4c, 0x10, 0xe3, 0xe9, 0x5c, 0x08, 0x6f, 0x9c, 0x3d, 0x14, 0x64, 0x90, 0xd6,
-	0xa1, 0x8a, 0x68, 0x32, 0xd5, 0x3e, 0x7d, 0xf3, 0xe7, 0xd0, 0x3a, 0x96, 0x32, 0xa6, 0x7d, 0xb3,
-	0x0d, 0xde, 0x86, 0x5a, 0x7c, 0xfe, 0x93, 0xd9, 0x27, 0x23, 0x9e, 0x38, 0xf8, 0x03, 0x58, 0xcd,
-	0xaa, 0x95, 0x6e, 0xe8, 0x67, 0xb0, 0xde, 0xc7, 0x91, 0x7f, 0x81, 0x6f, 0x0a, 0xbd, 0x0b, 0x2c,
-	0x5f, 0xb0, 0x94, 0xc0, 0x19, 0x6c, 0x9c, 0x85, 0x42, 0xe9, 0x97, 0x18, 0x26, 0x92, 0x7e, 0x33,
-	0x12, 0x77, 0x00, 0x14, 0x5e, 0xa6, 0x4f, 0x83, 0x61, 0xa1, 0xf0, 0x32, 0xa9, 0xc1, 0x8f, 0x60,
-	0x73, 0xb6, 0x6a, 0x29, 0x93, 0x6f, 0xa1, 0x9d, 0x7f, 0x96, 0xde, 0xaa, 0x9e, 0x91, 0xe0, 0x4e,
-	0x81, 0x95, 0xd1, 0x3b, 0xfa, 0xb1, 0x06, 0x9d, 0xd3, 0xd9, 0xb3, 0x7e, 0x7c, 0xfa, 0x8c, 0x8d,
-	0xa1, 0x9e, 0xfb, 0x51, 0xc3, 0x76, 0x0b, 0x6e, 0xc4, 0xfc, 0x4f, 0x35, 0xe7, 0xdd, 0xb2, 0xb4,
-	0x84, 0x10, 0xbf, 0xf5, 0xf3, 0xeb, 0x7f, 0x7e, 0x5b, 0x58, 0xe7, 0x8d, 0x1e, 0x4a, 0x37, 0x32,
-	0x6b, 0x1e, 0x5b, 0x87, 0xec, 0x3b, 0x68, 0xe4, 0x9f, 0x0c, 0x56, 0x54, 0xb0, 0xe0, 0xb9, 0x73,
-	0xf6, 0x4a, 0xf3, 0x0c, 0xb2, 0x4d, 0xc8, 0x8c, 0x37, 0x7b, 0x42, 0xca, 0x4c, 0xbd, 0x62, 0xe8,
-	0x1f, 0xa0, 0x39, 0x25, 0xef, 0x6c, 0xef, 0x8a, 0x66, 0xe6, 0xc0, 0xf7, 0xcb, 0x13, 0x0d, 0xfa,
-	0x6d, 0x42, 0x6f, 0xf3, 0x16, 0xf5, 0x3d, 0x05, 0xff, 0x8b, 0x05, 0xab, 0x33, 0x8a, 0xce, 0x0e,
-	0x0a, 0x0a, 0x17, 0xbf, 0x27, 0xce, 0xe1, 0x4d, 0x52, 0x0d, 0x8b, 0x2d, 0x62, 0xb1, 0xc1, 0xd7,
-	0x7a, 0x92, 0x32, 0xa6, 0x78, 0xfc, 0x6e, 0x41, 0xbb, 0x40, 0xc6, 0xd9, 0xc3, 0x02, 0x80, 0xab,
-	0x1f, 0x13, 0xa7, 0x7b, 0xd3, 0x74, 0xc3, 0xe9, 0x2e, 0x71, 0xba, 0xcd, 0x3b, 0xbd, 0x8c, 0xcd,
-	0x20, 0xcb, 0x8a, 0x79, 0x21, 0xac, 0x18, 0x01, 0x62, 0xf7, 0x8a, 0x37, 0x3b, 0x27, 0x36, 0x0e,
-	0xbf, 0x2e, 0xc5, 0x40, 0xb6, 0x09, 0xb2, 0xc9, 0xab, 0xf1, 0x51, 0x88, 0xb5, 0x26, 0x86, 0x79,
-	0x05, 0x30, 0x51, 0x1a, 0x76, 0xbf, 0xa0, 0xcc, 0x9c, 0xb2, 0x39, 0xbb, 0x25, 0x59, 0x06, 0x6f,
-	0x93, 0xf0, 0xd6, 0x78, 0xbd, 0x17, 0x52, 0x30, 0x85, 0xfc, 0xc9, 0x82, 0xd6, 0xb4, 0xae, 0xb0,
-	0xa2, 0x13, 0x55, 0x28, 0x68, 0xce, 0xc1, 0x0d, 0x32, 0x0d, 0xbe, 0x43, 0xf8, 0x1d, 0xbe, 0xda,
-	0x8b, 0x4c, 0x42, 0x22, 0x74, 0xe9, 0xbd, 0xcb, 0x29, 0x47, 0xf1, 0xbd, 0x9b, 0xd7, 0xb1, 0xe2,
-	0x7b, 0x57, 0x20, 0x41, 0xf9, 0x7b, 0x97, 0x0b, 0x3f, 0xb6, 0x0e, 0x5f, 0x2c, 0xd3, 0x9f, 0xbf,
-	0x47, 0xff, 0x06, 0x00, 0x00, 0xff, 0xff, 0x00, 0xe9, 0x0b, 0xff, 0x50, 0x0e, 0x00, 0x00,
+	// 733 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x96, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0x86, 0xe5, 0xa4, 0x49, 0xd3, 0x29, 0x4d, 0xdb, 0x4d, 0x1a, 0x5c, 0xb7, 0xa8, 0x61, 0x05,
+	0x25, 0x2d, 0x6a, 0x0c, 0xed, 0x01, 0xa9, 0xb7, 0x0a, 0x38, 0x20, 0xb5, 0xa2, 0x8a, 0x8a, 0xc4,
+	0x01, 0x09, 0x99, 0x78, 0x08, 0x46, 0xce, 0x6e, 0xea, 0xdd, 0x50, 0x38, 0x70, 0x00, 0x89, 0x03,
+	0xe7, 0x8a, 0x03, 0x12, 0x8f, 0xc2, 0x5b, 0xf0, 0x0a, 0x3c, 0x08, 0xf2, 0xc6, 0x71, 0xed, 0x64,
+	0x1b, 0x07, 0x54, 0x71, 0xcb, 0xce, 0xce, 0xce, 0xff, 0x8d, 0xbd, 0xf3, 0x3b, 0xb0, 0xd1, 0x0b,
+	0xb8, 0xe4, 0xc2, 0xee, 0x05, 0xfc, 0x2d, 0xb6, 0xe5, 0x4e, 0xd7, 0x61, 0x4e, 0x07, 0xbb, 0xc8,
+	0x64, 0x53, 0xed, 0x90, 0xe5, 0x68, 0xe7, 0x28, 0xde, 0xb0, 0xd6, 0x3b, 0x9c, 0x77, 0x7c, 0xb4,
+	0x9d, 0x9e, 0x67, 0x3b, 0x8c, 0x71, 0xe9, 0x48, 0x8f, 0x33, 0x31, 0x38, 0x40, 0x7f, 0x18, 0x50,
+	0x3e, 0xf2, 0x7c, 0x14, 0x92, 0x33, 0x3c, 0xe2, 0x2e, 0xfa, 0x64, 0x09, 0xf2, 0xef, 0x3d, 0xd7,
+	0x34, 0xea, 0x46, 0x63, 0xae, 0x15, 0xfe, 0x24, 0x55, 0x28, 0x48, 0x4f, 0xfa, 0x68, 0xe6, 0x54,
+	0x6c, 0xb0, 0x20, 0x75, 0x98, 0x77, 0x51, 0xb4, 0x03, 0xaf, 0x17, 0x16, 0x34, 0xf3, 0x6a, 0x2f,
+	0x19, 0x0a, 0xcf, 0xf5, 0x05, 0x06, 0xc2, 0x9c, 0xa9, 0xe7, 0xc3, 0x73, 0x6a, 0x41, 0x6a, 0x50,
+	0x3c, 0x43, 0xaf, 0xf3, 0x46, 0x9a, 0x85, 0xba, 0xd1, 0x28, 0xb4, 0xa2, 0x15, 0x21, 0x30, 0xe3,
+	0x72, 0x86, 0x66, 0xb1, 0x6e, 0x34, 0x4a, 0x2d, 0xf5, 0x9b, 0x7e, 0x37, 0xa0, 0x72, 0xe0, 0xba,
+	0x31, 0x61, 0x0b, 0x4f, 0xfb, 0x28, 0x24, 0x59, 0x87, 0xb9, 0xa8, 0xd3, 0x98, 0xf4, 0x22, 0xf0,
+	0x7f, 0x78, 0xe9, 0x3d, 0xa8, 0xa6, 0xd1, 0x44, 0x8f, 0x33, 0x81, 0xc4, 0x84, 0x59, 0xd1, 0x6f,
+	0xb7, 0x51, 0x08, 0x45, 0x56, 0x6a, 0x0d, 0x97, 0xf4, 0xa7, 0x01, 0xd5, 0xc7, 0xae, 0x27, 0xc7,
+	0xda, 0xa9, 0xc3, 0x7c, 0x77, 0x18, 0x8b, 0x1b, 0x4a, 0x86, 0xd2, 0x0d, 0xe7, 0x2e, 0x6d, 0x38,
+	0x3f, 0xa1, 0xe1, 0x99, 0x09, 0x0d, 0x17, 0xf4, 0x0d, 0x17, 0x53, 0x0d, 0xdf, 0x87, 0x95, 0x11,
+	0xfa, 0xcc, 0x8e, 0x9f, 0x43, 0xed, 0x11, 0xfa, 0x28, 0xf1, 0x2f, 0xdf, 0xe0, 0xc8, 0x03, 0xc9,
+	0x8d, 0x3d, 0x10, 0xba, 0x07, 0xd7, 0xc7, 0x2a, 0x67, 0xe2, 0xbc, 0x00, 0x2b, 0x4e, 0x7f, 0xc8,
+	0xbb, 0x3d, 0x1f, 0xc3, 0xc7, 0x70, 0x55, 0x48, 0x0f, 0x60, 0x4d, 0x5b, 0x3d, 0x13, 0xeb, 0x10,
+	0xca, 0x07, 0xae, 0xfb, 0x4c, 0x60, 0x30, 0x1d, 0xca, 0x3a, 0xcc, 0x85, 0x6f, 0x0a, 0xbb, 0x8e,
+	0xe7, 0x0f, 0x2f, 0x43, 0x1c, 0xa0, 0x77, 0x61, 0x31, 0xae, 0x96, 0x29, 0xfd, 0x14, 0x96, 0x5b,
+	0xd8, 0xe5, 0xef, 0xf0, 0xaa, 0xd4, 0x9b, 0x40, 0x92, 0x05, 0x33, 0x01, 0x4e, 0x60, 0xe5, 0x24,
+	0x70, 0x98, 0x78, 0x8d, 0xc1, 0x21, 0x3a, 0xee, 0xb4, 0x10, 0x37, 0x00, 0x18, 0x9e, 0xbd, 0xf4,
+	0xd5, 0x91, 0x21, 0x05, 0xc3, 0xb3, 0x41, 0x0d, 0xba, 0x0b, 0xb5, 0xd1, 0xaa, 0x99, 0x24, 0xe7,
+	0xa1, 0xd7, 0x30, 0xc6, 0xfb, 0xac, 0xad, 0x9c, 0x73, 0x3a, 0x90, 0x4d, 0x28, 0x3b, 0x89, 0x43,
+	0xf1, 0xcd, 0x18, 0x89, 0xfe, 0xeb, 0x88, 0x2a, 0x97, 0x49, 0x41, 0x65, 0xf5, 0xb1, 0xfb, 0xb5,
+	0x04, 0xd5, 0xe3, 0xd1, 0xcf, 0xc0, 0xc1, 0xf1, 0x13, 0xf2, 0x01, 0xae, 0x25, 0x0d, 0x8b, 0x6c,
+	0x36, 0xc7, 0xbe, 0x16, 0x4d, 0x8d, 0xd9, 0x5a, 0x77, 0x32, 0xf3, 0x06, 0x4c, 0xd4, 0xfc, 0xfc,
+	0xeb, 0xf7, 0x79, 0x8e, 0xd0, 0x05, 0xdb, 0x71, 0xdd, 0x78, 0x32, 0xf6, 0x8d, 0x6d, 0xf2, 0x11,
+	0x16, 0x52, 0xd6, 0x41, 0x74, 0x35, 0x75, 0xd6, 0x68, 0x35, 0xb2, 0x13, 0x23, 0xf5, 0x55, 0xa5,
+	0x5e, 0xa1, 0x65, 0x1b, 0x5d, 0x4f, 0xa6, 0xe4, 0xbf, 0x18, 0xb0, 0x38, 0xe2, 0x16, 0x64, 0x4b,
+	0x53, 0x58, 0xef, 0x55, 0xd6, 0xf6, 0x34, 0xa9, 0x11, 0xc5, 0x9a, 0xa2, 0x58, 0xa1, 0x4b, 0xb6,
+	0xab, 0x32, 0x52, 0x1c, 0xdf, 0x0c, 0xa8, 0x68, 0x2c, 0x82, 0xec, 0x68, 0x04, 0x2e, 0x37, 0x2a,
+	0xab, 0x39, 0x6d, 0x7a, 0xc4, 0xb4, 0xa1, 0x98, 0x56, 0x69, 0xd5, 0x8e, 0x69, 0xda, 0x71, 0x56,
+	0xc8, 0x85, 0x30, 0x1b, 0x59, 0x06, 0xb9, 0xa9, 0x7f, 0xd9, 0x09, 0x7b, 0xb0, 0xe8, 0xa4, 0x94,
+	0x48, 0xb2, 0xa2, 0x24, 0x17, 0x68, 0x29, 0xbc, 0x0a, 0xa1, 0x3b, 0x84, 0x32, 0xa7, 0x00, 0x17,
+	0xde, 0x40, 0x6e, 0x69, 0xca, 0x8c, 0x79, 0x91, 0x75, 0x3b, 0x23, 0x2b, 0xd2, 0xab, 0x29, 0xbd,
+	0x25, 0x3a, 0x6f, 0x07, 0x6a, 0x73, 0x28, 0xf9, 0xc9, 0x80, 0x72, 0xda, 0x09, 0x88, 0xee, 0x46,
+	0x69, 0x2d, 0xc8, 0xda, 0x9a, 0x22, 0x33, 0xd2, 0xb7, 0x94, 0x7e, 0x95, 0x2e, 0xda, 0x32, 0x4a,
+	0x18, 0x58, 0x53, 0xc8, 0x10, 0xce, 0x5d, 0x62, 0x84, 0xf5, 0x73, 0x37, 0x6e, 0x3c, 0xfa, 0xb9,
+	0xd3, 0x78, 0x41, 0x72, 0xee, 0x12, 0xdb, 0xfb, 0xc6, 0xf6, 0xab, 0xa2, 0xfa, 0x97, 0xb7, 0xf7,
+	0x27, 0x00, 0x00, 0xff, 0xff, 0xc4, 0xc6, 0x92, 0xa2, 0x39, 0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1352,7 +946,6 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type ProjectManagementAPIClient interface {
-	EditProject(ctx context.Context, in *EditProjectRequest, opts ...grpc.CallOption) (*EditProjectResponse, error)
 	AddMilestone(ctx context.Context, in *AddMilestoneRequest, opts ...grpc.CallOption) (*AddMilestoneResponse, error)
 	EditMilestone(ctx context.Context, in *EditMilestoneRequest, opts ...grpc.CallOption) (*EditMilestoneResponse, error)
 	DeleteMilestone(ctx context.Context, in *DeleteMilestoneRequest, opts ...grpc.CallOption) (*DeleteMilestoneResponse, error)
@@ -1369,15 +962,6 @@ type projectManagementAPIClient struct {
 
 func NewProjectManagementAPIClient(cc *grpc.ClientConn) ProjectManagementAPIClient {
 	return &projectManagementAPIClient{cc}
-}
-
-func (c *projectManagementAPIClient) EditProject(ctx context.Context, in *EditProjectRequest, opts ...grpc.CallOption) (*EditProjectResponse, error) {
-	out := new(EditProjectResponse)
-	err := c.cc.Invoke(ctx, "/projectManagement.ProjectManagementAPI/EditProject", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *projectManagementAPIClient) AddMilestone(ctx context.Context, in *AddMilestoneRequest, opts ...grpc.CallOption) (*AddMilestoneResponse, error) {
@@ -1454,7 +1038,6 @@ func (c *projectManagementAPIClient) Announcement(ctx context.Context, in *Annou
 
 // ProjectManagementAPIServer is the server API for ProjectManagementAPI service.
 type ProjectManagementAPIServer interface {
-	EditProject(context.Context, *EditProjectRequest) (*EditProjectResponse, error)
 	AddMilestone(context.Context, *AddMilestoneRequest) (*AddMilestoneResponse, error)
 	EditMilestone(context.Context, *EditMilestoneRequest) (*EditMilestoneResponse, error)
 	DeleteMilestone(context.Context, *DeleteMilestoneRequest) (*DeleteMilestoneResponse, error)
@@ -1467,24 +1050,6 @@ type ProjectManagementAPIServer interface {
 
 func RegisterProjectManagementAPIServer(s *grpc.Server, srv ProjectManagementAPIServer) {
 	s.RegisterService(&_ProjectManagementAPI_serviceDesc, srv)
-}
-
-func _ProjectManagementAPI_EditProject_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EditProjectRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ProjectManagementAPIServer).EditProject(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/projectManagement.ProjectManagementAPI/EditProject",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ProjectManagementAPIServer).EditProject(ctx, req.(*EditProjectRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _ProjectManagementAPI_AddMilestone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1635,10 +1200,6 @@ var _ProjectManagementAPI_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "projectManagement.ProjectManagementAPI",
 	HandlerType: (*ProjectManagementAPIServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "EditProject",
-			Handler:    _ProjectManagementAPI_EditProject_Handler,
-		},
 		{
 			MethodName: "AddMilestone",
 			Handler:    _ProjectManagementAPI_AddMilestone_Handler,
