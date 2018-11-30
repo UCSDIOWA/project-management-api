@@ -247,8 +247,34 @@ func (s *server) MilestoneCompletion( ctx context.Context, milCompReq *pb.Milest
     return &pb.MilestoneCompletionResponse{Success: true}, nil
 }
 
-func (s *server) DeleteMilestone( ctx context.Context, rMileReq *pb.DeleteMilestoneRequest) (*pb.DeleteMilestoneResponse, error) {
-    return &pb.DeleteMilestoneResponse{}, nil
+func (s *server) DeleteMilestone( ctx context.Context, delMileReq *pb.DeleteMilestoneRequest) (*pb.DeleteMilestoneResponse, error) {
+	//Get Project milestones
+	milestones := &projectM{}
+	find := bson.M{"xid": delMileReq.Projectid}
+	err := ProjC.Operation.Find(find).One(milestones)
+	if err != nil {
+		return &pb.DeleteMilestoneResponse{Success: false}, nil
+	}
+	//Find Milestone and delete
+	for i, cur := range milestones.Milestones {
+		if( strings.Compare(cur, delMileReq.Milestoneid) == 0){
+			milestones.Milestones[i] = "0"
+		}
+	}
+	//Update database
+	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones}}
+	err = ProjC.Operation.Update(find, update)
+	if err != nil {
+		return &pb.DeleteMilestoneResponse{Success: false}, nil
+	}
+
+	//Update Progressbar
+	err = updateProgressBar( delMileReq.Projectid )
+	if err != nil {
+		return &pb.DeleteMilestoneResponse{Success: false}, nil
+	}
+	//Otherwise everything is good
+    return &pb.DeleteMilestoneResponse{Success: true}, nil
 }
 
 func (s *server) AddUser( ctx context.Context, addUReq *pb.AddUserRequest ) (*pb.AddUserResponse, error) {
