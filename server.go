@@ -157,7 +157,7 @@ func (s *server) AddMilestone( ctx context.Context, addMileReq *pb.AddMilestoneR
 }
 
 func updateProgressBar(projectid string) error {
-	milestones := projectM{}
+	milestones := &projectM{}
 	find := bson.M{"xid": projectid}
 	err := ProjC.Operation.Find(find).One(milestones)
 	if err != nil {
@@ -181,6 +181,7 @@ func updateProgressBar(projectid string) error {
 			}
 		}
 	}
+
 	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones,
 		"progressbar": finishedWeight*100/totalWeight}}
 	err = ProjC.Operation.Update(find, update)
