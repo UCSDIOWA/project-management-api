@@ -47,6 +47,20 @@ service ProjectManagementAPI {
         };
     }
 
+    rpc RejectUser (RejectUserRequest) returns (RejectUserResponse) {
+        option (google.api.http) = {
+            post: "/rejectuser"
+            body: "*"
+        };
+    }
+
+    rpc GetProjectMembers (GetProjectMembersRequest) returns (GetProjectMembersResponse) {
+        option (google.api.http) = {
+            post: "/getprojectmembers"
+            body: "*"
+        };
+    }
+
     rpc TransferLeader (TransferLeaderRequest) returns (TransferLeaderResponse){
         option (google.api.http) = {
             post: "/transferleader"
@@ -57,6 +71,13 @@ service ProjectManagementAPI {
     rpc Announcement (AnnouncementRequest) returns (AnnouncementResponse) {
         option (google.api.http) = {
             post: "/announcement"
+            body: "*"
+        };
+    }
+
+    rpc InviteUser (InviteUserRequest) returns (InviteUserResponse) {
+        option (google.api.http) = {
+            post: "/inviteuser"
             body: "*"
         };
     }
@@ -98,7 +119,7 @@ message EditMilestoneResponse {
 
 message DeleteMilestoneRequest {
     string projectid = 1;
-    string milestoneid = 2;
+    string milestoneid = 2;                                             
 }
 
 message DeleteMilestoneResponse {
@@ -111,6 +132,31 @@ message MilestoneCompletionRequest {
 }
 
 message MilestoneCompletionResponse {
+    bool success = 1;
+}
+
+message GetProjectMembersRequest {
+    string projectid = 1;
+    repeated string currentMembers = 2;
+}
+
+message GetProjectMembersResponse {
+    bool success = 1;
+    repeated UserTuple users = 2;
+}
+
+message UserTuple {
+    string email = 1;
+    string firstName = 2;
+}
+
+message InviteUserRequest {
+    string projectid = 1;
+    string receipientEmail = 2;
+    string senderEmail = 3;
+}
+
+message InviteUserResponse {
     bool success = 1;
 }
 
@@ -129,6 +175,15 @@ message RemoveUserRequest {
 }
 
 message RemoveUserResponse {
+    bool success = 1;
+}
+
+message RejectUserRequest {
+    string projectid = 1;
+    string useremail = 2;
+}
+
+message RejectUserResponse {
     bool success = 1;
 }
 

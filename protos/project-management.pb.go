@@ -6,10 +6,11 @@ package projectManagement
 import (
 	context "context"
 	fmt "fmt"
+	math "math"
+
 	proto "github.com/golang/protobuf/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
-	math "math"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -21,7 +22,7 @@ var _ = math.Inf
 // is compatible with the proto package it is being compiled against.
 // A compilation error at this line likely means your copy of the
 // proto package needs to be updated.
-const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
+const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type MilestoneModel struct {
 	Xid                  string   `protobuf:"bytes,1,opt,name=xid,proto3" json:"xid,omitempty"`
@@ -502,6 +503,241 @@ func (m *MilestoneCompletionResponse) GetSuccess() bool {
 	return false
 }
 
+type GetProjectMembersRequest struct {
+	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
+	CurrentMembers       []string `protobuf:"bytes,2,rep,name=currentMembers,proto3" json:"currentMembers,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *GetProjectMembersRequest) Reset()         { *m = GetProjectMembersRequest{} }
+func (m *GetProjectMembersRequest) String() string { return proto.CompactTextString(m) }
+func (*GetProjectMembersRequest) ProtoMessage()    {}
+func (*GetProjectMembersRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73530e506fe37ed3, []int{9}
+}
+
+func (m *GetProjectMembersRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetProjectMembersRequest.Unmarshal(m, b)
+}
+func (m *GetProjectMembersRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetProjectMembersRequest.Marshal(b, m, deterministic)
+}
+func (m *GetProjectMembersRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetProjectMembersRequest.Merge(m, src)
+}
+func (m *GetProjectMembersRequest) XXX_Size() int {
+	return xxx_messageInfo_GetProjectMembersRequest.Size(m)
+}
+func (m *GetProjectMembersRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetProjectMembersRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetProjectMembersRequest proto.InternalMessageInfo
+
+func (m *GetProjectMembersRequest) GetProjectid() string {
+	if m != nil {
+		return m.Projectid
+	}
+	return ""
+}
+
+func (m *GetProjectMembersRequest) GetCurrentMembers() []string {
+	if m != nil {
+		return m.CurrentMembers
+	}
+	return nil
+}
+
+type GetProjectMembersResponse struct {
+	Success              bool         `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Users                []*UserTuple `protobuf:"bytes,2,rep,name=users,proto3" json:"users,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}     `json:"-"`
+	XXX_unrecognized     []byte       `json:"-"`
+	XXX_sizecache        int32        `json:"-"`
+}
+
+func (m *GetProjectMembersResponse) Reset()         { *m = GetProjectMembersResponse{} }
+func (m *GetProjectMembersResponse) String() string { return proto.CompactTextString(m) }
+func (*GetProjectMembersResponse) ProtoMessage()    {}
+func (*GetProjectMembersResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73530e506fe37ed3, []int{10}
+}
+
+func (m *GetProjectMembersResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_GetProjectMembersResponse.Unmarshal(m, b)
+}
+func (m *GetProjectMembersResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_GetProjectMembersResponse.Marshal(b, m, deterministic)
+}
+func (m *GetProjectMembersResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetProjectMembersResponse.Merge(m, src)
+}
+func (m *GetProjectMembersResponse) XXX_Size() int {
+	return xxx_messageInfo_GetProjectMembersResponse.Size(m)
+}
+func (m *GetProjectMembersResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetProjectMembersResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetProjectMembersResponse proto.InternalMessageInfo
+
+func (m *GetProjectMembersResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *GetProjectMembersResponse) GetUsers() []*UserTuple {
+	if m != nil {
+		return m.Users
+	}
+	return nil
+}
+
+type UserTuple struct {
+	Email                string   `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	FirstName            string   `protobuf:"bytes,2,opt,name=firstName,proto3" json:"firstName,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *UserTuple) Reset()         { *m = UserTuple{} }
+func (m *UserTuple) String() string { return proto.CompactTextString(m) }
+func (*UserTuple) ProtoMessage()    {}
+func (*UserTuple) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73530e506fe37ed3, []int{11}
+}
+
+func (m *UserTuple) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UserTuple.Unmarshal(m, b)
+}
+func (m *UserTuple) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UserTuple.Marshal(b, m, deterministic)
+}
+func (m *UserTuple) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UserTuple.Merge(m, src)
+}
+func (m *UserTuple) XXX_Size() int {
+	return xxx_messageInfo_UserTuple.Size(m)
+}
+func (m *UserTuple) XXX_DiscardUnknown() {
+	xxx_messageInfo_UserTuple.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UserTuple proto.InternalMessageInfo
+
+func (m *UserTuple) GetEmail() string {
+	if m != nil {
+		return m.Email
+	}
+	return ""
+}
+
+func (m *UserTuple) GetFirstName() string {
+	if m != nil {
+		return m.FirstName
+	}
+	return ""
+}
+
+type InviteUserRequest struct {
+	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
+	ReceipientEmail      string   `protobuf:"bytes,2,opt,name=receipientEmail,proto3" json:"receipientEmail,omitempty"`
+	SenderEmail          string   `protobuf:"bytes,3,opt,name=senderEmail,proto3" json:"senderEmail,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *InviteUserRequest) Reset()         { *m = InviteUserRequest{} }
+func (m *InviteUserRequest) String() string { return proto.CompactTextString(m) }
+func (*InviteUserRequest) ProtoMessage()    {}
+func (*InviteUserRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73530e506fe37ed3, []int{12}
+}
+
+func (m *InviteUserRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InviteUserRequest.Unmarshal(m, b)
+}
+func (m *InviteUserRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InviteUserRequest.Marshal(b, m, deterministic)
+}
+func (m *InviteUserRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InviteUserRequest.Merge(m, src)
+}
+func (m *InviteUserRequest) XXX_Size() int {
+	return xxx_messageInfo_InviteUserRequest.Size(m)
+}
+func (m *InviteUserRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_InviteUserRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InviteUserRequest proto.InternalMessageInfo
+
+func (m *InviteUserRequest) GetProjectid() string {
+	if m != nil {
+		return m.Projectid
+	}
+	return ""
+}
+
+func (m *InviteUserRequest) GetReceipientEmail() string {
+	if m != nil {
+		return m.ReceipientEmail
+	}
+	return ""
+}
+
+func (m *InviteUserRequest) GetSenderEmail() string {
+	if m != nil {
+		return m.SenderEmail
+	}
+	return ""
+}
+
+type InviteUserResponse struct {
+	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *InviteUserResponse) Reset()         { *m = InviteUserResponse{} }
+func (m *InviteUserResponse) String() string { return proto.CompactTextString(m) }
+func (*InviteUserResponse) ProtoMessage()    {}
+func (*InviteUserResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73530e506fe37ed3, []int{13}
+}
+
+func (m *InviteUserResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InviteUserResponse.Unmarshal(m, b)
+}
+func (m *InviteUserResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InviteUserResponse.Marshal(b, m, deterministic)
+}
+func (m *InviteUserResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InviteUserResponse.Merge(m, src)
+}
+func (m *InviteUserResponse) XXX_Size() int {
+	return xxx_messageInfo_InviteUserResponse.Size(m)
+}
+func (m *InviteUserResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_InviteUserResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InviteUserResponse proto.InternalMessageInfo
+
+func (m *InviteUserResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
 type AddUserRequest struct {
 	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
 	Useremail            string   `protobuf:"bytes,2,opt,name=useremail,proto3" json:"useremail,omitempty"`
@@ -514,7 +750,7 @@ func (m *AddUserRequest) Reset()         { *m = AddUserRequest{} }
 func (m *AddUserRequest) String() string { return proto.CompactTextString(m) }
 func (*AddUserRequest) ProtoMessage()    {}
 func (*AddUserRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{9}
+	return fileDescriptor_73530e506fe37ed3, []int{14}
 }
 
 func (m *AddUserRequest) XXX_Unmarshal(b []byte) error {
@@ -560,7 +796,7 @@ func (m *AddUserResponse) Reset()         { *m = AddUserResponse{} }
 func (m *AddUserResponse) String() string { return proto.CompactTextString(m) }
 func (*AddUserResponse) ProtoMessage()    {}
 func (*AddUserResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{10}
+	return fileDescriptor_73530e506fe37ed3, []int{15}
 }
 
 func (m *AddUserResponse) XXX_Unmarshal(b []byte) error {
@@ -600,7 +836,7 @@ func (m *RemoveUserRequest) Reset()         { *m = RemoveUserRequest{} }
 func (m *RemoveUserRequest) String() string { return proto.CompactTextString(m) }
 func (*RemoveUserRequest) ProtoMessage()    {}
 func (*RemoveUserRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{11}
+	return fileDescriptor_73530e506fe37ed3, []int{16}
 }
 
 func (m *RemoveUserRequest) XXX_Unmarshal(b []byte) error {
@@ -646,7 +882,7 @@ func (m *RemoveUserResponse) Reset()         { *m = RemoveUserResponse{} }
 func (m *RemoveUserResponse) String() string { return proto.CompactTextString(m) }
 func (*RemoveUserResponse) ProtoMessage()    {}
 func (*RemoveUserResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{12}
+	return fileDescriptor_73530e506fe37ed3, []int{17}
 }
 
 func (m *RemoveUserResponse) XXX_Unmarshal(b []byte) error {
@@ -674,6 +910,92 @@ func (m *RemoveUserResponse) GetSuccess() bool {
 	return false
 }
 
+type RejectUserRequest struct {
+	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
+	Useremail            string   `protobuf:"bytes,2,opt,name=useremail,proto3" json:"useremail,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RejectUserRequest) Reset()         { *m = RejectUserRequest{} }
+func (m *RejectUserRequest) String() string { return proto.CompactTextString(m) }
+func (*RejectUserRequest) ProtoMessage()    {}
+func (*RejectUserRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73530e506fe37ed3, []int{18}
+}
+
+func (m *RejectUserRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RejectUserRequest.Unmarshal(m, b)
+}
+func (m *RejectUserRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RejectUserRequest.Marshal(b, m, deterministic)
+}
+func (m *RejectUserRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RejectUserRequest.Merge(m, src)
+}
+func (m *RejectUserRequest) XXX_Size() int {
+	return xxx_messageInfo_RejectUserRequest.Size(m)
+}
+func (m *RejectUserRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RejectUserRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RejectUserRequest proto.InternalMessageInfo
+
+func (m *RejectUserRequest) GetProjectid() string {
+	if m != nil {
+		return m.Projectid
+	}
+	return ""
+}
+
+func (m *RejectUserRequest) GetUseremail() string {
+	if m != nil {
+		return m.Useremail
+	}
+	return ""
+}
+
+type RejectUserResponse struct {
+	Success              bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *RejectUserResponse) Reset()         { *m = RejectUserResponse{} }
+func (m *RejectUserResponse) String() string { return proto.CompactTextString(m) }
+func (*RejectUserResponse) ProtoMessage()    {}
+func (*RejectUserResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_73530e506fe37ed3, []int{19}
+}
+
+func (m *RejectUserResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_RejectUserResponse.Unmarshal(m, b)
+}
+func (m *RejectUserResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_RejectUserResponse.Marshal(b, m, deterministic)
+}
+func (m *RejectUserResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RejectUserResponse.Merge(m, src)
+}
+func (m *RejectUserResponse) XXX_Size() int {
+	return xxx_messageInfo_RejectUserResponse.Size(m)
+}
+func (m *RejectUserResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RejectUserResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RejectUserResponse proto.InternalMessageInfo
+
+func (m *RejectUserResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
 type TransferLeaderRequest struct {
 	Projectid            string   `protobuf:"bytes,1,opt,name=projectid,proto3" json:"projectid,omitempty"`
 	NewLeader            string   `protobuf:"bytes,2,opt,name=new_leader,json=newLeader,proto3" json:"new_leader,omitempty"`
@@ -686,7 +1008,7 @@ func (m *TransferLeaderRequest) Reset()         { *m = TransferLeaderRequest{} }
 func (m *TransferLeaderRequest) String() string { return proto.CompactTextString(m) }
 func (*TransferLeaderRequest) ProtoMessage()    {}
 func (*TransferLeaderRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{13}
+	return fileDescriptor_73530e506fe37ed3, []int{20}
 }
 
 func (m *TransferLeaderRequest) XXX_Unmarshal(b []byte) error {
@@ -732,7 +1054,7 @@ func (m *TransferLeaderResponse) Reset()         { *m = TransferLeaderResponse{}
 func (m *TransferLeaderResponse) String() string { return proto.CompactTextString(m) }
 func (*TransferLeaderResponse) ProtoMessage()    {}
 func (*TransferLeaderResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{14}
+	return fileDescriptor_73530e506fe37ed3, []int{21}
 }
 
 func (m *TransferLeaderResponse) XXX_Unmarshal(b []byte) error {
@@ -774,7 +1096,7 @@ func (m *AnnouncementRequest) Reset()         { *m = AnnouncementRequest{} }
 func (m *AnnouncementRequest) String() string { return proto.CompactTextString(m) }
 func (*AnnouncementRequest) ProtoMessage()    {}
 func (*AnnouncementRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{15}
+	return fileDescriptor_73530e506fe37ed3, []int{22}
 }
 
 func (m *AnnouncementRequest) XXX_Unmarshal(b []byte) error {
@@ -834,7 +1156,7 @@ func (m *AnnouncementResponse) Reset()         { *m = AnnouncementResponse{} }
 func (m *AnnouncementResponse) String() string { return proto.CompactTextString(m) }
 func (*AnnouncementResponse) ProtoMessage()    {}
 func (*AnnouncementResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_73530e506fe37ed3, []int{16}
+	return fileDescriptor_73530e506fe37ed3, []int{23}
 }
 
 func (m *AnnouncementResponse) XXX_Unmarshal(b []byte) error {
@@ -872,10 +1194,17 @@ func init() {
 	proto.RegisterType((*DeleteMilestoneResponse)(nil), "projectManagement.DeleteMilestoneResponse")
 	proto.RegisterType((*MilestoneCompletionRequest)(nil), "projectManagement.MilestoneCompletionRequest")
 	proto.RegisterType((*MilestoneCompletionResponse)(nil), "projectManagement.MilestoneCompletionResponse")
+	proto.RegisterType((*GetProjectMembersRequest)(nil), "projectManagement.GetProjectMembersRequest")
+	proto.RegisterType((*GetProjectMembersResponse)(nil), "projectManagement.GetProjectMembersResponse")
+	proto.RegisterType((*UserTuple)(nil), "projectManagement.UserTuple")
+	proto.RegisterType((*InviteUserRequest)(nil), "projectManagement.InviteUserRequest")
+	proto.RegisterType((*InviteUserResponse)(nil), "projectManagement.InviteUserResponse")
 	proto.RegisterType((*AddUserRequest)(nil), "projectManagement.AddUserRequest")
 	proto.RegisterType((*AddUserResponse)(nil), "projectManagement.AddUserResponse")
 	proto.RegisterType((*RemoveUserRequest)(nil), "projectManagement.RemoveUserRequest")
 	proto.RegisterType((*RemoveUserResponse)(nil), "projectManagement.RemoveUserResponse")
+	proto.RegisterType((*RejectUserRequest)(nil), "projectManagement.RejectUserRequest")
+	proto.RegisterType((*RejectUserResponse)(nil), "projectManagement.RejectUserResponse")
 	proto.RegisterType((*TransferLeaderRequest)(nil), "projectManagement.TransferLeaderRequest")
 	proto.RegisterType((*TransferLeaderResponse)(nil), "projectManagement.TransferLeaderResponse")
 	proto.RegisterType((*AnnouncementRequest)(nil), "projectManagement.AnnouncementRequest")
@@ -885,53 +1214,66 @@ func init() {
 func init() { proto.RegisterFile("protos/project-management.proto", fileDescriptor_73530e506fe37ed3) }
 
 var fileDescriptor_73530e506fe37ed3 = []byte{
-	// 733 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x96, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0x86, 0xe5, 0xa4, 0x49, 0xd3, 0x29, 0x4d, 0xdb, 0x4d, 0x1a, 0x5c, 0xb7, 0xa8, 0x61, 0x05,
-	0x25, 0x2d, 0x6a, 0x0c, 0xed, 0x01, 0xa9, 0xb7, 0x0a, 0x38, 0x20, 0xb5, 0xa2, 0x8a, 0x8a, 0xc4,
-	0x01, 0x09, 0x99, 0x78, 0x08, 0x46, 0xce, 0x6e, 0xea, 0xdd, 0x50, 0x38, 0x70, 0x00, 0x89, 0x03,
-	0xe7, 0x8a, 0x03, 0x12, 0x8f, 0xc2, 0x5b, 0xf0, 0x0a, 0x3c, 0x08, 0xf2, 0xc6, 0x71, 0xed, 0x64,
-	0x1b, 0x07, 0x54, 0x71, 0xcb, 0xce, 0xce, 0xce, 0xff, 0x8d, 0xbd, 0xf3, 0x3b, 0xb0, 0xd1, 0x0b,
-	0xb8, 0xe4, 0xc2, 0xee, 0x05, 0xfc, 0x2d, 0xb6, 0xe5, 0x4e, 0xd7, 0x61, 0x4e, 0x07, 0xbb, 0xc8,
-	0x64, 0x53, 0xed, 0x90, 0xe5, 0x68, 0xe7, 0x28, 0xde, 0xb0, 0xd6, 0x3b, 0x9c, 0x77, 0x7c, 0xb4,
-	0x9d, 0x9e, 0x67, 0x3b, 0x8c, 0x71, 0xe9, 0x48, 0x8f, 0x33, 0x31, 0x38, 0x40, 0x7f, 0x18, 0x50,
-	0x3e, 0xf2, 0x7c, 0x14, 0x92, 0x33, 0x3c, 0xe2, 0x2e, 0xfa, 0x64, 0x09, 0xf2, 0xef, 0x3d, 0xd7,
-	0x34, 0xea, 0x46, 0x63, 0xae, 0x15, 0xfe, 0x24, 0x55, 0x28, 0x48, 0x4f, 0xfa, 0x68, 0xe6, 0x54,
-	0x6c, 0xb0, 0x20, 0x75, 0x98, 0x77, 0x51, 0xb4, 0x03, 0xaf, 0x17, 0x16, 0x34, 0xf3, 0x6a, 0x2f,
-	0x19, 0x0a, 0xcf, 0xf5, 0x05, 0x06, 0xc2, 0x9c, 0xa9, 0xe7, 0xc3, 0x73, 0x6a, 0x41, 0x6a, 0x50,
-	0x3c, 0x43, 0xaf, 0xf3, 0x46, 0x9a, 0x85, 0xba, 0xd1, 0x28, 0xb4, 0xa2, 0x15, 0x21, 0x30, 0xe3,
-	0x72, 0x86, 0x66, 0xb1, 0x6e, 0x34, 0x4a, 0x2d, 0xf5, 0x9b, 0x7e, 0x37, 0xa0, 0x72, 0xe0, 0xba,
-	0x31, 0x61, 0x0b, 0x4f, 0xfb, 0x28, 0x24, 0x59, 0x87, 0xb9, 0xa8, 0xd3, 0x98, 0xf4, 0x22, 0xf0,
-	0x7f, 0x78, 0xe9, 0x3d, 0xa8, 0xa6, 0xd1, 0x44, 0x8f, 0x33, 0x81, 0xc4, 0x84, 0x59, 0xd1, 0x6f,
-	0xb7, 0x51, 0x08, 0x45, 0x56, 0x6a, 0x0d, 0x97, 0xf4, 0xa7, 0x01, 0xd5, 0xc7, 0xae, 0x27, 0xc7,
-	0xda, 0xa9, 0xc3, 0x7c, 0x77, 0x18, 0x8b, 0x1b, 0x4a, 0x86, 0xd2, 0x0d, 0xe7, 0x2e, 0x6d, 0x38,
-	0x3f, 0xa1, 0xe1, 0x99, 0x09, 0x0d, 0x17, 0xf4, 0x0d, 0x17, 0x53, 0x0d, 0xdf, 0x87, 0x95, 0x11,
-	0xfa, 0xcc, 0x8e, 0x9f, 0x43, 0xed, 0x11, 0xfa, 0x28, 0xf1, 0x2f, 0xdf, 0xe0, 0xc8, 0x03, 0xc9,
-	0x8d, 0x3d, 0x10, 0xba, 0x07, 0xd7, 0xc7, 0x2a, 0x67, 0xe2, 0xbc, 0x00, 0x2b, 0x4e, 0x7f, 0xc8,
-	0xbb, 0x3d, 0x1f, 0xc3, 0xc7, 0x70, 0x55, 0x48, 0x0f, 0x60, 0x4d, 0x5b, 0x3d, 0x13, 0xeb, 0x10,
-	0xca, 0x07, 0xae, 0xfb, 0x4c, 0x60, 0x30, 0x1d, 0xca, 0x3a, 0xcc, 0x85, 0x6f, 0x0a, 0xbb, 0x8e,
-	0xe7, 0x0f, 0x2f, 0x43, 0x1c, 0xa0, 0x77, 0x61, 0x31, 0xae, 0x96, 0x29, 0xfd, 0x14, 0x96, 0x5b,
-	0xd8, 0xe5, 0xef, 0xf0, 0xaa, 0xd4, 0x9b, 0x40, 0x92, 0x05, 0x33, 0x01, 0x4e, 0x60, 0xe5, 0x24,
-	0x70, 0x98, 0x78, 0x8d, 0xc1, 0x21, 0x3a, 0xee, 0xb4, 0x10, 0x37, 0x00, 0x18, 0x9e, 0xbd, 0xf4,
-	0xd5, 0x91, 0x21, 0x05, 0xc3, 0xb3, 0x41, 0x0d, 0xba, 0x0b, 0xb5, 0xd1, 0xaa, 0x99, 0x24, 0xe7,
-	0xa1, 0xd7, 0x30, 0xc6, 0xfb, 0xac, 0xad, 0x9c, 0x73, 0x3a, 0x90, 0x4d, 0x28, 0x3b, 0x89, 0x43,
-	0xf1, 0xcd, 0x18, 0x89, 0xfe, 0xeb, 0x88, 0x2a, 0x97, 0x49, 0x41, 0x65, 0xf5, 0xb1, 0xfb, 0xb5,
-	0x04, 0xd5, 0xe3, 0xd1, 0xcf, 0xc0, 0xc1, 0xf1, 0x13, 0xf2, 0x01, 0xae, 0x25, 0x0d, 0x8b, 0x6c,
-	0x36, 0xc7, 0xbe, 0x16, 0x4d, 0x8d, 0xd9, 0x5a, 0x77, 0x32, 0xf3, 0x06, 0x4c, 0xd4, 0xfc, 0xfc,
-	0xeb, 0xf7, 0x79, 0x8e, 0xd0, 0x05, 0xdb, 0x71, 0xdd, 0x78, 0x32, 0xf6, 0x8d, 0x6d, 0xf2, 0x11,
-	0x16, 0x52, 0xd6, 0x41, 0x74, 0x35, 0x75, 0xd6, 0x68, 0x35, 0xb2, 0x13, 0x23, 0xf5, 0x55, 0xa5,
-	0x5e, 0xa1, 0x65, 0x1b, 0x5d, 0x4f, 0xa6, 0xe4, 0xbf, 0x18, 0xb0, 0x38, 0xe2, 0x16, 0x64, 0x4b,
-	0x53, 0x58, 0xef, 0x55, 0xd6, 0xf6, 0x34, 0xa9, 0x11, 0xc5, 0x9a, 0xa2, 0x58, 0xa1, 0x4b, 0xb6,
-	0xab, 0x32, 0x52, 0x1c, 0xdf, 0x0c, 0xa8, 0x68, 0x2c, 0x82, 0xec, 0x68, 0x04, 0x2e, 0x37, 0x2a,
-	0xab, 0x39, 0x6d, 0x7a, 0xc4, 0xb4, 0xa1, 0x98, 0x56, 0x69, 0xd5, 0x8e, 0x69, 0xda, 0x71, 0x56,
-	0xc8, 0x85, 0x30, 0x1b, 0x59, 0x06, 0xb9, 0xa9, 0x7f, 0xd9, 0x09, 0x7b, 0xb0, 0xe8, 0xa4, 0x94,
-	0x48, 0xb2, 0xa2, 0x24, 0x17, 0x68, 0x29, 0xbc, 0x0a, 0xa1, 0x3b, 0x84, 0x32, 0xa7, 0x00, 0x17,
-	0xde, 0x40, 0x6e, 0x69, 0xca, 0x8c, 0x79, 0x91, 0x75, 0x3b, 0x23, 0x2b, 0xd2, 0xab, 0x29, 0xbd,
-	0x25, 0x3a, 0x6f, 0x07, 0x6a, 0x73, 0x28, 0xf9, 0xc9, 0x80, 0x72, 0xda, 0x09, 0x88, 0xee, 0x46,
-	0x69, 0x2d, 0xc8, 0xda, 0x9a, 0x22, 0x33, 0xd2, 0xb7, 0x94, 0x7e, 0x95, 0x2e, 0xda, 0x32, 0x4a,
-	0x18, 0x58, 0x53, 0xc8, 0x10, 0xce, 0x5d, 0x62, 0x84, 0xf5, 0x73, 0x37, 0x6e, 0x3c, 0xfa, 0xb9,
-	0xd3, 0x78, 0x41, 0x72, 0xee, 0x12, 0xdb, 0xfb, 0xc6, 0xf6, 0xab, 0xa2, 0xfa, 0x97, 0xb7, 0xf7,
-	0x27, 0x00, 0x00, 0xff, 0xff, 0xc4, 0xc6, 0x92, 0xa2, 0x39, 0x0a, 0x00, 0x00,
+	// 942 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x57, 0xcd, 0x6e, 0x1c, 0x45,
+	0x10, 0xd6, 0xac, 0x7f, 0x62, 0x97, 0xf1, 0xda, 0x6e, 0xaf, 0x9d, 0xf1, 0xc4, 0x51, 0x96, 0x16,
+	0x84, 0x4d, 0x42, 0x76, 0xc0, 0x39, 0x20, 0x71, 0x41, 0x16, 0x44, 0x28, 0x52, 0x0c, 0xd6, 0xca,
+	0x48, 0x1c, 0x90, 0x60, 0xb2, 0x53, 0x59, 0x1a, 0xcd, 0xf4, 0x6c, 0xa6, 0x7b, 0x63, 0x38, 0xe4,
+	0x00, 0x12, 0x47, 0x4e, 0x11, 0x07, 0x24, 0x1e, 0x85, 0xb7, 0xe0, 0x15, 0x78, 0x0f, 0x50, 0xf7,
+	0xf4, 0xce, 0xce, 0x4f, 0xaf, 0x67, 0x40, 0x16, 0xb7, 0xed, 0xaa, 0xea, 0xfa, 0xbe, 0xea, 0xae,
+	0xfe, 0x6a, 0x16, 0xee, 0x4c, 0xd3, 0x44, 0x26, 0xc2, 0x9f, 0xa6, 0xc9, 0x77, 0x38, 0x96, 0x0f,
+	0xe3, 0x80, 0x07, 0x13, 0x8c, 0x91, 0xcb, 0xa1, 0xf6, 0x90, 0x3d, 0xe3, 0x39, 0xcb, 0x1d, 0xde,
+	0xf1, 0x24, 0x49, 0x26, 0x11, 0xfa, 0xc1, 0x94, 0xf9, 0x01, 0xe7, 0x89, 0x0c, 0x24, 0x4b, 0xb8,
+	0xc8, 0x36, 0xd0, 0xdf, 0x1d, 0xe8, 0x9e, 0xb1, 0x08, 0x85, 0x4c, 0x38, 0x9e, 0x25, 0x21, 0x46,
+	0x64, 0x17, 0x56, 0xbe, 0x67, 0xa1, 0xeb, 0xf4, 0x9d, 0xc1, 0xe6, 0x48, 0xfd, 0x24, 0x3d, 0x58,
+	0x93, 0x4c, 0x46, 0xe8, 0x76, 0xb4, 0x2d, 0x5b, 0x90, 0x3e, 0x6c, 0x85, 0x28, 0xc6, 0x29, 0x9b,
+	0xaa, 0x84, 0xee, 0x8a, 0xf6, 0x15, 0x4d, 0x6a, 0xdf, 0x4c, 0x60, 0x2a, 0xdc, 0xd5, 0xfe, 0x8a,
+	0xda, 0xa7, 0x17, 0xe4, 0x10, 0xd6, 0x2f, 0x91, 0x4d, 0xbe, 0x95, 0xee, 0x5a, 0xdf, 0x19, 0xac,
+	0x8d, 0xcc, 0x8a, 0x10, 0x58, 0x0d, 0x13, 0x8e, 0xee, 0x7a, 0xdf, 0x19, 0x6c, 0x8c, 0xf4, 0x6f,
+	0xfa, 0x9b, 0x03, 0xfb, 0xa7, 0x61, 0x98, 0x33, 0x1c, 0xe1, 0x8b, 0x19, 0x0a, 0x49, 0x8e, 0x61,
+	0xd3, 0x54, 0x9a, 0x33, 0x5d, 0x18, 0xfe, 0x1f, 0xbe, 0xf4, 0x3d, 0xe8, 0x95, 0xa9, 0x89, 0x69,
+	0xc2, 0x05, 0x12, 0x17, 0x6e, 0x88, 0xd9, 0x78, 0x8c, 0x42, 0x68, 0x66, 0x1b, 0xa3, 0xf9, 0x92,
+	0xfe, 0xe1, 0x40, 0xef, 0x71, 0xc8, 0x64, 0xad, 0x9c, 0x3e, 0x6c, 0xc5, 0x73, 0x5b, 0x5e, 0x50,
+	0xd1, 0x54, 0x2e, 0xb8, 0xb3, 0xb4, 0xe0, 0x95, 0x2b, 0x0a, 0x5e, 0xbd, 0xa2, 0xe0, 0x35, 0x7b,
+	0xc1, 0xeb, 0xa5, 0x82, 0xdf, 0x87, 0x83, 0x0a, 0xfb, 0xc6, 0x8a, 0xbf, 0x84, 0xc3, 0x4f, 0x30,
+	0x42, 0x89, 0xff, 0xf2, 0x06, 0x2b, 0x07, 0xd2, 0xa9, 0x1d, 0x08, 0x7d, 0x04, 0x37, 0x6b, 0x99,
+	0x1b, 0xe9, 0x7c, 0x05, 0x5e, 0x1e, 0xfe, 0x71, 0x12, 0x4f, 0x23, 0x54, 0xc7, 0x70, 0x5d, 0x94,
+	0x3e, 0x80, 0x5b, 0xd6, 0xec, 0x8d, 0xb4, 0xbe, 0x01, 0xf7, 0x53, 0x94, 0xe7, 0xe6, 0xe9, 0x62,
+	0xfc, 0x0c, 0x53, 0xd1, 0x8e, 0xd4, 0x5d, 0xe8, 0x8e, 0x67, 0x69, 0x8a, 0x7c, 0xbe, 0xcd, 0xed,
+	0xe8, 0x9b, 0xac, 0x58, 0x29, 0x83, 0x23, 0x0b, 0x42, 0x13, 0x31, 0x72, 0x32, 0xef, 0x0f, 0x95,
+	0x75, 0xeb, 0xe4, 0x78, 0x58, 0x93, 0x97, 0xe1, 0x17, 0x02, 0xd3, 0x8b, 0xd9, 0x34, 0x42, 0xd3,
+	0x3d, 0xf4, 0x23, 0xd8, 0xcc, 0x6d, 0xaa, 0xc1, 0x30, 0x0e, 0x58, 0x64, 0x98, 0x67, 0x0b, 0x55,
+	0xd3, 0x73, 0x96, 0x0a, 0xf9, 0x59, 0x10, 0xcf, 0xdf, 0xe8, 0xc2, 0x40, 0x5f, 0xc1, 0xde, 0x13,
+	0xfe, 0x92, 0x49, 0x54, 0x69, 0xda, 0x1d, 0xc3, 0x00, 0x76, 0x52, 0x1c, 0x23, 0x9b, 0x32, 0xe4,
+	0xf2, 0xb1, 0x06, 0xcc, 0xd2, 0x56, 0xcd, 0xea, 0x16, 0x05, 0xf2, 0x10, 0xd3, 0x2c, 0xca, 0x88,
+	0x40, 0xc1, 0x44, 0x87, 0x40, 0x8a, 0xf0, 0x8d, 0x97, 0xf7, 0x14, 0xba, 0xa7, 0x61, 0xd8, 0x9e,
+	0xeb, 0x31, 0x6c, 0xaa, 0x83, 0xc2, 0x02, 0xcb, 0x85, 0x81, 0x3e, 0x80, 0x9d, 0x3c, 0x5b, 0x23,
+	0xf4, 0xe7, 0xb0, 0x37, 0xc2, 0x38, 0x79, 0x89, 0xd7, 0x85, 0x3e, 0x04, 0x52, 0x4c, 0xd8, 0x8e,
+	0x80, 0xca, 0x7c, 0xad, 0x04, 0x16, 0x09, 0x1b, 0x09, 0x5c, 0xc0, 0xc1, 0x45, 0x1a, 0x70, 0xf1,
+	0x1c, 0xd3, 0xa7, 0x18, 0x84, 0x6d, 0x49, 0xdc, 0x06, 0xe0, 0x78, 0xf9, 0x75, 0xa4, 0xb7, 0xcc,
+	0x59, 0x70, 0xbc, 0xcc, 0x72, 0xd0, 0x13, 0x38, 0xac, 0x66, 0x6d, 0x64, 0xf2, 0x5a, 0x4d, 0x2a,
+	0xce, 0x93, 0x19, 0x1f, 0xeb, 0x87, 0xd1, 0xfa, 0xfd, 0x06, 0x85, 0x4d, 0xb9, 0xae, 0x54, 0xac,
+	0xff, 0x55, 0xe0, 0xf5, 0x8c, 0x2a, 0x91, 0x6a, 0xaa, 0xe3, 0xe4, 0x6f, 0x80, 0xde, 0x79, 0xf5,
+	0x95, 0x9f, 0x9e, 0x3f, 0x21, 0x3f, 0xc0, 0x1b, 0xc5, 0x71, 0x47, 0xee, 0x5a, 0xc4, 0xc0, 0x32,
+	0xaa, 0xbd, 0x77, 0x1a, 0xe3, 0x32, 0x4e, 0xd4, 0xfd, 0xe9, 0xcf, 0xbf, 0x5e, 0x77, 0x08, 0xdd,
+	0xf6, 0x83, 0x30, 0xcc, 0x75, 0xf5, 0x43, 0xe7, 0x3e, 0x79, 0x05, 0xdb, 0xa5, 0xc1, 0x43, 0x6c,
+	0x39, 0x6d, 0x83, 0xd5, 0x1b, 0x34, 0x07, 0x1a, 0xf4, 0x23, 0x8d, 0xbe, 0x4f, 0xbb, 0x3e, 0x86,
+	0x4c, 0x96, 0xe0, 0x7f, 0x76, 0x60, 0xa7, 0x32, 0x6b, 0xc8, 0x3d, 0x4b, 0x62, 0xfb, 0xa4, 0xf3,
+	0xee, 0xb7, 0x09, 0x35, 0x2c, 0x6e, 0x69, 0x16, 0x07, 0x74, 0xd7, 0x0f, 0x75, 0x44, 0x89, 0xc7,
+	0xaf, 0x0e, 0xec, 0x5b, 0x06, 0x0c, 0x79, 0x68, 0x01, 0x58, 0x3e, 0xe6, 0xbc, 0x61, 0xdb, 0x70,
+	0xc3, 0xe9, 0x8e, 0xe6, 0x74, 0x44, 0x7b, 0x7e, 0xce, 0x66, 0x9c, 0x47, 0x29, 0x5e, 0x08, 0x37,
+	0x8c, 0x66, 0x91, 0x37, 0xed, 0x97, 0x5d, 0x90, 0x07, 0x8f, 0x5e, 0x15, 0x62, 0x20, 0xf7, 0x35,
+	0xe4, 0x36, 0xdd, 0x50, 0xad, 0xa0, 0xd4, 0x41, 0xc1, 0xbc, 0x00, 0x58, 0x88, 0x13, 0x79, 0xcb,
+	0x92, 0xa6, 0x26, 0x86, 0xde, 0xdb, 0x0d, 0x51, 0x06, 0xef, 0x50, 0xe3, 0xed, 0xd2, 0x2d, 0x3f,
+	0xd5, 0xce, 0x12, 0xe4, 0x5c, 0x8e, 0x96, 0x40, 0x56, 0xe4, 0x6f, 0x09, 0x64, 0x55, 0xd3, 0x4a,
+	0x90, 0xca, 0x39, 0x87, 0xfc, 0xc5, 0x81, 0xbd, 0xda, 0xa8, 0x26, 0x0f, 0x2c, 0x49, 0x97, 0x7d,
+	0x32, 0x78, 0xef, 0xb6, 0x0b, 0x36, 0x44, 0x6e, 0x6b, 0x22, 0x37, 0x29, 0xf1, 0x27, 0x28, 0xcd,
+	0xc6, 0x38, 0x8b, 0x51, 0x7c, 0x7e, 0x74, 0xa0, 0x5b, 0x16, 0x43, 0x62, 0x7b, 0x54, 0x56, 0x15,
+	0xf6, 0xee, 0xb5, 0x88, 0x34, 0x34, 0x3c, 0x4d, 0xa3, 0x47, 0x77, 0x7c, 0x69, 0x02, 0x32, 0x75,
+	0x56, 0x1c, 0x94, 0xf4, 0x14, 0x54, 0xcc, 0x2e, 0x3d, 0x75, 0xed, 0xb5, 0x4b, 0x8f, 0x45, 0x0e,
+	0x8b, 0xd2, 0x53, 0x70, 0x9b, 0x0e, 0x58, 0x7c, 0x0d, 0x58, 0x3b, 0xa0, 0xf6, 0xad, 0x62, 0xed,
+	0x80, 0xfa, 0x27, 0x45, 0xa1, 0x03, 0x98, 0x76, 0x9a, 0x0e, 0x78, 0xb6, 0xae, 0xff, 0x99, 0x3d,
+	0xfa, 0x27, 0x00, 0x00, 0xff, 0xff, 0x58, 0xa3, 0x79, 0x6c, 0xed, 0x0d, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -952,8 +1294,11 @@ type ProjectManagementAPIClient interface {
 	MilestoneCompletion(ctx context.Context, in *MilestoneCompletionRequest, opts ...grpc.CallOption) (*MilestoneCompletionResponse, error)
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserResponse, error)
 	RemoveUser(ctx context.Context, in *RemoveUserRequest, opts ...grpc.CallOption) (*RemoveUserResponse, error)
+	RejectUser(ctx context.Context, in *RejectUserRequest, opts ...grpc.CallOption) (*RejectUserResponse, error)
+	GetProjectMembers(ctx context.Context, in *GetProjectMembersRequest, opts ...grpc.CallOption) (*GetProjectMembersResponse, error)
 	TransferLeader(ctx context.Context, in *TransferLeaderRequest, opts ...grpc.CallOption) (*TransferLeaderResponse, error)
 	Announcement(ctx context.Context, in *AnnouncementRequest, opts ...grpc.CallOption) (*AnnouncementResponse, error)
+	InviteUser(ctx context.Context, in *InviteUserRequest, opts ...grpc.CallOption) (*InviteUserResponse, error)
 }
 
 type projectManagementAPIClient struct {
@@ -1018,6 +1363,24 @@ func (c *projectManagementAPIClient) RemoveUser(ctx context.Context, in *RemoveU
 	return out, nil
 }
 
+func (c *projectManagementAPIClient) RejectUser(ctx context.Context, in *RejectUserRequest, opts ...grpc.CallOption) (*RejectUserResponse, error) {
+	out := new(RejectUserResponse)
+	err := c.cc.Invoke(ctx, "/projectManagement.ProjectManagementAPI/RejectUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectManagementAPIClient) GetProjectMembers(ctx context.Context, in *GetProjectMembersRequest, opts ...grpc.CallOption) (*GetProjectMembersResponse, error) {
+	out := new(GetProjectMembersResponse)
+	err := c.cc.Invoke(ctx, "/projectManagement.ProjectManagementAPI/GetProjectMembers", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *projectManagementAPIClient) TransferLeader(ctx context.Context, in *TransferLeaderRequest, opts ...grpc.CallOption) (*TransferLeaderResponse, error) {
 	out := new(TransferLeaderResponse)
 	err := c.cc.Invoke(ctx, "/projectManagement.ProjectManagementAPI/TransferLeader", in, out, opts...)
@@ -1036,6 +1399,15 @@ func (c *projectManagementAPIClient) Announcement(ctx context.Context, in *Annou
 	return out, nil
 }
 
+func (c *projectManagementAPIClient) InviteUser(ctx context.Context, in *InviteUserRequest, opts ...grpc.CallOption) (*InviteUserResponse, error) {
+	out := new(InviteUserResponse)
+	err := c.cc.Invoke(ctx, "/projectManagement.ProjectManagementAPI/InviteUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ProjectManagementAPIServer is the server API for ProjectManagementAPI service.
 type ProjectManagementAPIServer interface {
 	AddMilestone(context.Context, *AddMilestoneRequest) (*AddMilestoneResponse, error)
@@ -1044,8 +1416,11 @@ type ProjectManagementAPIServer interface {
 	MilestoneCompletion(context.Context, *MilestoneCompletionRequest) (*MilestoneCompletionResponse, error)
 	AddUser(context.Context, *AddUserRequest) (*AddUserResponse, error)
 	RemoveUser(context.Context, *RemoveUserRequest) (*RemoveUserResponse, error)
+	RejectUser(context.Context, *RejectUserRequest) (*RejectUserResponse, error)
+	GetProjectMembers(context.Context, *GetProjectMembersRequest) (*GetProjectMembersResponse, error)
 	TransferLeader(context.Context, *TransferLeaderRequest) (*TransferLeaderResponse, error)
 	Announcement(context.Context, *AnnouncementRequest) (*AnnouncementResponse, error)
+	InviteUser(context.Context, *InviteUserRequest) (*InviteUserResponse, error)
 }
 
 func RegisterProjectManagementAPIServer(s *grpc.Server, srv ProjectManagementAPIServer) {
@@ -1160,6 +1535,42 @@ func _ProjectManagementAPI_RemoveUser_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectManagementAPI_RejectUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RejectUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManagementAPIServer).RejectUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projectManagement.ProjectManagementAPI/RejectUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManagementAPIServer).RejectUser(ctx, req.(*RejectUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectManagementAPI_GetProjectMembers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProjectMembersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManagementAPIServer).GetProjectMembers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projectManagement.ProjectManagementAPI/GetProjectMembers",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManagementAPIServer).GetProjectMembers(ctx, req.(*GetProjectMembersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProjectManagementAPI_TransferLeader_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TransferLeaderRequest)
 	if err := dec(in); err != nil {
@@ -1196,6 +1607,24 @@ func _ProjectManagementAPI_Announcement_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectManagementAPI_InviteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InviteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectManagementAPIServer).InviteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projectManagement.ProjectManagementAPI/InviteUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectManagementAPIServer).InviteUser(ctx, req.(*InviteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _ProjectManagementAPI_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "projectManagement.ProjectManagementAPI",
 	HandlerType: (*ProjectManagementAPIServer)(nil),
@@ -1225,12 +1654,24 @@ var _ProjectManagementAPI_serviceDesc = grpc.ServiceDesc{
 			Handler:    _ProjectManagementAPI_RemoveUser_Handler,
 		},
 		{
+			MethodName: "RejectUser",
+			Handler:    _ProjectManagementAPI_RejectUser_Handler,
+		},
+		{
+			MethodName: "GetProjectMembers",
+			Handler:    _ProjectManagementAPI_GetProjectMembers_Handler,
+		},
+		{
 			MethodName: "TransferLeader",
 			Handler:    _ProjectManagementAPI_TransferLeader_Handler,
 		},
 		{
 			MethodName: "Announcement",
 			Handler:    _ProjectManagementAPI_Announcement_Handler,
+		},
+		{
+			MethodName: "InviteUser",
+			Handler:    _ProjectManagementAPI_InviteUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

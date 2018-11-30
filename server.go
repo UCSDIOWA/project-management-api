@@ -1,104 +1,124 @@
 package main
 
 import (
-    "context"
-    "log"
-    "net"
-    "strings"
-//    "flag"
-//    "os"
-//    "net/http"
+	"context"
+	"log"
+	"net"
+	"strings"
 
-    pb "github.com/UCSDIOWA/project-management-api/protos"
-    "github.com/globalsign/mgo"
-    "github.com/globalsign/mgo/bson"
-//    "github.com/golang/glog"
-    "google.golang.org/grpc"
+	//    "flag"
+	//    "os"
+	//    "net/http"
+
+	pb "github.com/UCSDIOWA/project-management-api/protos"
+	"github.com/globalsign/mgo"
+	"github.com/globalsign/mgo/bson"
+
+	//    "github.com/golang/glog"
+	"google.golang.org/grpc"
 )
 
 type server struct{}
 
 //Struct to handle current projects of user
 type userP struct {
-    CurrentProjects []string `json:"currentprojects" bson:"currentprojects"`
+	CurrentProjects []string `json:"currentprojects" bson:"currentprojects"`
 }
+
 //Struct to handle users in projects
 type projectU struct {
-    Users    []string `json:"users" bson:"users"`
+	CurrentMembers []string `json:"memberslist" bson:"memberslist"`
 }
+
+//Struct to handle pending users in projects
+type userJoinReqs struct {
+	JoinRequests []string `json:"joinrequests" bson:"joinrequests"`
+}
+
 //Struct to handle project milestones
 type projectM struct {
-    Milestones []string `json:"milestones" bson:"milestones"`
+	Milestones []string `json:"milestones" bson:"milestones"`
 }
+
+//Struct to handle user invitations
+type userInvites struct {
+    Invitations []string `json:"invitations" bson:"invitations"`
+}
+
+//Struct to handle user invitations
+type projectT struct {
+    Title string `json:"title" bson:"title"`
+}
+
 //Struct to handle Milestone Weight
 type weightM struct {
-    Weight int32 `json:"weight" bson:"weight"`
-    Done bool `json:"done" bson:"done"`
+	Weight int32 `json:"weight" bson:"weight"`
+	Done   bool  `json:"done" bson:"done"`
 }
 
 type mongo struct {
-    Operation *mgo.Collection
+	Operation *mgo.Collection
 }
 
 var (
-    UserC   *mongo
-    ProjC   *mongo
-    MileC   *mongo
+	UserC *mongo
+	ProjC *mongo
+	MileC *mongo
 
-    //echoEndpoint = flag.String("echo_endpoint", "localhost:50052", "endpoint of project-management-api")
+	//echoEndpoint = flag.String("echo_endpoint", "localhost:50052", "endpoint of project-management-api")
 )
 
 func main() {
-    errors := make(chan error)
+	errors := make(chan error)
 
-    go func() {
-        errors <- startGRPC()
-    }()
+	go func() {
+		errors <- startGRPC()
+	}()
 
-    /*go func() {
-        flag.Parse()
-        defer glog.Flush()
+	/*go func() {
+	    flag.Parse()
+	    defer glog.Flush()
 
-        errors <- startHTTP()
-    }()*/
+	    errors <- startHTTP()
+	}()*/
 
-    for err := range errors {
-        log.Fatal(err)
-        return
-    }
+	for err := range errors {
+		log.Fatal(err)
+		return
+	}
 }
 
 func startGRPC() error {
-    //Host mongo server
-    m, err := mgo.Dial("127.0.0.1:27017")
-    if err != nil {
-        log.Fatalf("Could not connecto to the MongoDB server: %v", err)
-    }
+	//Host mongo server
+	m, err := mgo.Dial("127.0.0.1:27017")
+	if err != nil {
+		log.Fatalf("Could not connecto to the MongoDB server: %v", err)
+	}
 
-    defer m.Close()
-    log.Println("Connected to MongoDB server")
+	defer m.Close()
+	log.Println("Connected to MongoDB server")
 
-    //Accessing users collection in tea database
-    UserC = &mongo{m.DB("tea").C("users")}
-    //Accessing projects collection in tea database
-    ProjC = &mongo{m.DB("tea").C("projects")}
-    //Accessing milestones collection in tea database
-    MileC = &mongo{m.DB("tea").C("milestones")}
+	//Accessing users collection in tea database
+	UserC = &mongo{m.DB("tea").C("users")}
+	//Accessing projects collection in tea database
+	ProjC = &mongo{m.DB("tea").C("projects")}
+	//Accessing milestones collection in tea database
+	MileC = &mongo{m.DB("tea").C("milestones")}
 
-    listen, err := net.Listen("tcp", "127.0.0.1:50012")
-    if err != nil {
-        log.Fatalf("Could not listen on port: %v", err )
-    }
+	listen, err := net.Listen("tcp", "127.0.0.1:50012")
+	if err != nil {
+		log.Fatalf("Could not listen on port: %v", err)
+	}
 
-    log.Println("Hosting server on", listen.Addr().String())
+	log.Println("Hosting server on", listen.Addr().String())
 
-    s := grpc.NewServer()
-    pb.RegisterProjectManagementAPIServer(s, &server{})
-    if err := s.Serve(listen); err != nil {
-        log.Fatalf("Failed to serve: %v", err)
-    }
+	s := grpc.NewServer()
+	pb.RegisterProjectManagementAPIServer(s, &server{})
+	if err := s.Serve(listen); err != nil {
+		log.Fatalf("Failed to serve: %v", err)
+	}
 
-    return err
+	return err
 }
 
 /*func startHTTP() error {
@@ -123,36 +143,35 @@ func startGRPC() error {
     return http.ListenAndServe(":"+herokyPort, mux)
 }*/
 
-
-func (s *server) AddMilestone( ctx context.Context, addMileReq *pb.AddMilestoneRequest) (*pb.AddMilestoneResponse, error) {
-    xid := bson.NewObjectId().Hex()
-    milestone := &pb.MilestoneModel{
-        Xid:            xid,
-        Title:          addMileReq.Title,
-        Description:    addMileReq.Description,
-        Users:          addMileReq.Users,
-        Weight:         addMileReq.Weight}
-    err := MileC.Operation.Insert(milestone)
-    if err != nil {
-        return &pb.AddMilestoneResponse{Success: false}, nil
-    }
-    //Add to project milestones
-    milestones := &projectM{}
-    find := bson.M{"xid": addMileReq.Projectid}
-
-    err = ProjC.Operation.Find(find).One(milestones)
-    if err != nil {
-        return &pb.AddMilestoneResponse{Success: false}, nil
-    }
-
-    //Update project
-    milestones.Milestones = append(milestones.Milestones,xid)
-    update := bson.M{"$set": bson.M{"milestones": milestones.Milestones}}
-    err = ProjC.Operation.Update(find, update)
-    if err != nil {
+func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRequest) (*pb.AddMilestoneResponse, error) {
+	xid := bson.NewObjectId().Hex()
+	milestone := &pb.MilestoneModel{
+		Xid:         xid,
+		Title:       addMileReq.Title,
+		Description: addMileReq.Description,
+		Users:       addMileReq.Users,
+		Weight:      addMileReq.Weight}
+	err := MileC.Operation.Insert(milestone)
+	if err != nil {
 		return &pb.AddMilestoneResponse{Success: false}, nil
 	}
-    //Update progress bar
+	//Add to project milestones
+	milestones := &projectM{}
+	find := bson.M{"xid": addMileReq.Projectid}
+
+	err = ProjC.Operation.Find(find).One(milestones)
+	if err != nil {
+		return &pb.AddMilestoneResponse{Success: false}, nil
+	}
+
+	//Update project
+	milestones.Milestones = append(milestones.Milestones, xid)
+	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones}}
+	err = ProjC.Operation.Update(find, update)
+	if err != nil {
+		return &pb.AddMilestoneResponse{Success: false}, nil
+	}
+	//Update progress bar
 	err = updateProgressBar(addMileReq.Projectid)
 	if err != nil {
 		return &pb.AddMilestoneResponse{Success: false}, nil
@@ -188,7 +207,7 @@ func updateProgressBar(projectid string) error {
 	}
 
 	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones,
-		"progressbar": finishedWeight*100/totalWeight}}
+		"progressbar": finishedWeight * 100 / totalWeight}}
 	err = ProjC.Operation.Update(find, update)
 	if err != nil {
 		return err
@@ -197,9 +216,9 @@ func updateProgressBar(projectid string) error {
 	return nil
 }
 
-func (s *server) EditMilestone( ctx context.Context, edMileReq *pb.EditMilestoneRequest) (*pb.EditMilestoneResponse, error) {
-    //Find milestone
-	find := bson.M{"xid": edMileReq.Milestoneid }
+func (s *server) EditMilestone(ctx context.Context, edMileReq *pb.EditMilestoneRequest) (*pb.EditMilestoneResponse, error) {
+	//Find milestone
+	find := bson.M{"xid": edMileReq.Milestoneid}
 	beforeChange := &weightM{}
 	err := MileC.Operation.Find(find).One(beforeChange)
 	if err != nil {
@@ -207,47 +226,47 @@ func (s *server) EditMilestone( ctx context.Context, edMileReq *pb.EditMilestone
 	}
 
 	//Update Milestone
-    milestone := &pb.MilestoneModel{
-        Xid:            edMileReq.Milestoneid,
-        Title:          edMileReq.Title,
-        Description:    edMileReq.Description,
-        Users:          edMileReq.Users,
-        Weight:         edMileReq.Weight,
-    	Done:			beforeChange.Done}
+	milestone := &pb.MilestoneModel{
+		Xid:         edMileReq.Milestoneid,
+		Title:       edMileReq.Title,
+		Description: edMileReq.Description,
+		Users:       edMileReq.Users,
+		Weight:      edMileReq.Weight,
+		Done:        beforeChange.Done}
 
-    err = MileC.Operation.Update(find, milestone)
-    if err != nil {
-        return &pb.EditMilestoneResponse{Success: false}, nil
-    }
+	err = MileC.Operation.Update(find, milestone)
+	if err != nil {
+		return &pb.EditMilestoneResponse{Success: false}, nil
+	}
 
 	//Update progress bar if weight changed
-	if( beforeChange.Weight != edMileReq.Weight ) {
+	if beforeChange.Weight != edMileReq.Weight {
 		err := updateProgressBar(edMileReq.Projectid)
 		if err != nil {
 			return &pb.EditMilestoneResponse{Success: false}, nil
 		}
 	}
-    //Otherwise update successful
-    return &pb.EditMilestoneResponse{Success: true}, nil
+	//Otherwise update successful
+	return &pb.EditMilestoneResponse{Success: true}, nil
 }
 
-func (s *server) MilestoneCompletion( ctx context.Context, milCompReq *pb.MilestoneCompletionRequest) (*pb.MilestoneCompletionResponse, error) {
+func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.MilestoneCompletionRequest) (*pb.MilestoneCompletionResponse, error) {
 	//Update milestone status
-    find := bson.M{"xid": milCompReq.Milestoneid}
-    update := bson.M{"$set": bson.M{"done":true}}
-    err := MileC.Operation.Update(find,update)
-    if err != nil {
+	find := bson.M{"xid": milCompReq.Milestoneid}
+	update := bson.M{"$set": bson.M{"done": true}}
+	err := MileC.Operation.Update(find, update)
+	if err != nil {
 		return &pb.MilestoneCompletionResponse{Success: false}, nil
 	}
-    //Update progress bar
-    err = updateProgressBar(milCompReq.Projectid)
-    if err != nil {
+	//Update progress bar
+	err = updateProgressBar(milCompReq.Projectid)
+	if err != nil {
 		return &pb.MilestoneCompletionResponse{Success: false}, nil
 	}
-    return &pb.MilestoneCompletionResponse{Success: true}, nil
+	return &pb.MilestoneCompletionResponse{Success: true}, nil
 }
 
-func (s *server) DeleteMilestone( ctx context.Context, delMileReq *pb.DeleteMilestoneRequest) (*pb.DeleteMilestoneResponse, error) {
+func (s *server) DeleteMilestone(ctx context.Context, delMileReq *pb.DeleteMilestoneRequest) (*pb.DeleteMilestoneResponse, error) {
 	//Get Project milestones
 	milestones := &projectM{}
 	find := bson.M{"xid": delMileReq.Projectid}
@@ -257,7 +276,7 @@ func (s *server) DeleteMilestone( ctx context.Context, delMileReq *pb.DeleteMile
 	}
 	//Find Milestone and delete
 	for i, cur := range milestones.Milestones {
-		if( strings.Compare(cur, delMileReq.Milestoneid) == 0){
+		if strings.Compare(cur, delMileReq.Milestoneid) == 0 {
 			milestones.Milestones[i] = "0"
 		}
 	}
@@ -269,112 +288,202 @@ func (s *server) DeleteMilestone( ctx context.Context, delMileReq *pb.DeleteMile
 	}
 
 	//Update Progressbar
-	err = updateProgressBar( delMileReq.Projectid )
+	err = updateProgressBar(delMileReq.Projectid)
 	if err != nil {
 		return &pb.DeleteMilestoneResponse{Success: false}, nil
 	}
 	//Otherwise everything is good
-    return &pb.DeleteMilestoneResponse{Success: true}, nil
+	return &pb.DeleteMilestoneResponse{Success: true}, nil
 }
 
-func (s *server) AddUser( ctx context.Context, addUReq *pb.AddUserRequest ) (*pb.AddUserResponse, error) {
-    //Fetch User
-    userProjects := &userP{}
-    find := bson.M{"email": addUReq.Useremail}
+func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.AddUserResponse, error) {
+	//Fetch User
+	userProjects := &userP{}
+	find := bson.M{"email": addUReq.Useremail}
 
-    err := UserC.Operation.Find(find).One(userProjects)
-    if err != nil {
-        log.Println("Couldn't find user.")
-        return &pb.AddUserResponse{Success: false}, nil
-    }
+	err := UserC.Operation.Find(find).One(userProjects)
+	if err != nil {
+		log.Println("Couldn't find user.")
+		return &pb.AddUserResponse{Success: false}, nil
+	}
 
-    //Fetch project
-    projectUsers := &projectU{}
-    findId := bson.M{"xid": addUReq.Projectid}
+	//Fetch project
+	projectUsers := &projectU{}
+	findId := bson.M{"xid": addUReq.Projectid}
 
-    err = ProjC.Operation.Find(findId).One(projectUsers)
-    if err != nil {
-        log.Println("Couldn't find project.")
-        return &pb.AddUserResponse{Success: false}, nil
-    }
-    //Add project to user and update
-    userProjects.CurrentProjects = append(userProjects.CurrentProjects, addUReq.Projectid)
+	err = ProjC.Operation.Find(findId).One(projectUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
+		return &pb.AddUserResponse{Success: false}, nil
+	}
+	//Add project to user and update
+	userProjects.CurrentProjects = append(userProjects.CurrentProjects, addUReq.Projectid)
 
-    update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects}}
-    err = UserC.Operation.Update(find, update)
-    if err != nil {
-        log.Println("User update failed")
-        return &pb.AddUserResponse{Success: false}, nil
-    }
+	update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects}}
+	err = UserC.Operation.Update(find, update)
+	if err != nil {
+		log.Println("User update failed")
+		return &pb.AddUserResponse{Success: false}, nil
+	}
 
-    //Add user to project and update
-    projectUsers.Users = append( projectUsers.Users, addUReq.Useremail )
-    update = bson.M{"$set": bson.M{"users": projectUsers.Users}}
-    err = ProjC.Operation.Update(findId, update)
-    if err != nil {
-        log.Println("Projectupdate failed")
-        return &pb.AddUserResponse{Success: false}, nil
-    }
+	//Add user to project and update
+	projectUsers.Users = append(projectUsers.Users, addUReq.Useremail)
+	update = bson.M{"$set": bson.M{"memberslist": projectUsers.Users}}
+	err = ProjC.Operation.Update(findId, update)
+	if err != nil {
+		log.Println("Projectupdate failed")
+		return &pb.AddUserResponse{Success: false}, nil
+	}
 
-    //Otherwise Successful
-    return &pb.AddUserResponse{Success: true}, nil
+	//Otherwise Successful
+	return &pb.AddUserResponse{Success: true}, nil
 }
 
-func (s *server) RemoveUser( ctx context.Context, remUReq *pb.RemoveUserRequest ) (*pb.RemoveUserResponse, error) {
-    //Fetch User
-    userProjects := &userP{}
-    find := bson.M{"email": remUReq.Useremail}
+func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) (*pb.RemoveUserResponse, error) {
+	//Fetch User
+	userProjects := &userP{}
+	user := bson.M{"email": remUReq.Useremail}
 
-    err := UserC.Operation.Find(find).One(userProjects)
-    if err != nil {
-        log.Println("Couldn't find user.")
-        return &pb.RemoveUserResponse{Success: false}, nil
-    }
+	err := UserC.Operation.Find(find).One(userProjects)
+	if err != nil {
+		log.Println("Couldn't find user.")
+		return &pb.RemoveUserResponse{Success: false}, nil
+	}
 
-    //Fetch project
-    projectUsers := &projectU{}
-    findId := bson.M{"xid": remUReq.Projectid}
-    err = ProjC.Operation.Find(findId).One(projectUsers)
-    if err != nil {
-        log.Println("Couldn't find project.")
-        return &pb.RemoveUserResponse{Success: false}, nil
-    }
+	//Fetch project
+	projectUsers := &projectU{}
+	findId := bson.M{"xid": remUReq.Projectid}
+	err = ProjC.Operation.Find(findId).One(projectUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
+		return &pb.RemoveUserResponse{Success: false}, nil
+	}
 
-    //Find index of project id in user
-    for i, num := range userProjects.CurrentProjects {
-        if ( strings.Compare(num, remUReq.Projectid) == 0 ){
-            userProjects.CurrentProjects[i] = "0"
+	//Find index of project id in user, remove the user
+	for i, num := range userProjects.CurrentProjects {
+		if strings.Compare(num, remUReq.Projectid) == 0 {
+			userProjects.CurrentProjects[i] = userProjects.CurrentProjects[len(userProjects.CurrentProjects)-1]
+			userProjects.CurrentProjects = userProjects.CurrentProjects[:len(user)-1]
+		}
+	}
+	//Update user
+	update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects}}
+
+	err = UserC.Operation.Update(user, update)
+	if err != nil {
+		return &pb.RemoveUserResponse{Success: false}, nil
+	}
+
+	//Find index of user id in project
+	for i, num := range projectUsers.Users {
+		if strings.Compare(num, remUReq.Useremail) == 0 {
+			projectUsers.Users[i] = projectUsers.Users[len(projectUsers.users)]
+		}
+	}
+	//Update project
+	update = bson.M{"$set": bson.M{"memberslist": projectUsers.Users}}
+
+	err = ProjC.Operation.Update(findId, update)
+	if err != nil {
+		return &pb.RemoveUserResponse{Success: false}, nil
+	}
+	//Otherwise success
+	return &pb.RemoveUserResponse{Success: true}, nil
+}
+
+func (s *server) RejectUser(ctx context.Context, rejUsrReq *pb.RejectUserRequest) (*pb.RejectUserResponse, error) {
+
+	//Fetch project
+	pendingUsers := &userJoinReqs{}
+	findId := bson.M{"xid": rejUsrReq.Projectid}
+
+	err = ProjC.Operation.Find(findId).One(pendingUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
+		return &pb.RejectUserResponse{Success: false}, nil
+	}
+
+	//Remove user from pending users in project and update
+	for i, usr := range pendingUsers.JoinRequests {
+		if usr == rejUsrReq.useremail {
+			pendingUsers[i] = pendingUsers[len(pendingUsers)-1]
+			pendingUsers = pendingUsers[:len(pendingUsers)-1]
+			break
+		}
+	}
+	update = bson.M{"$set": bson.M{"joinrequests": pendingUsers.JoinRequests}}
+	err = ProjC.Operation.Update(findId, update)
+	if err != nil {
+		log.Println("Project update with new Pending-Users failed")
+		return &pb.RejectUserResponse{Success: false}, nil
+	}
+
+	//Otherwise Successful
+	return &pb.RejectUserResponse{Success: true}, nil
+}
+
+func (s *server) GetProjectMembers(ctx context.Context, currMembs *pb.GetProjectMembersRequest) (*pb.GetProjectMembersResponse, error) {
+
+    //for each email, find the user of that email and get it's first name and email
+    users = [](&pb.UserTuple{})
+    for _, currEmail := range currMembs.CurrentMembers {
+        //get this user's email and first name
+        userInfo = &pb.UserTuple{}
+        findId := bson.M{"email": rejUsrReq.Projectid}
+        err = UserC.Operation.Find(findId).One(userInfo)
+        if err != nil {
+            log.Println("Finding user based on given email failed")
+            return &pb.GetProjectMembersResponse{Success: false}, nil
         }
-    }
-    //Update user
-    update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects}}
-
-    err = UserC.Operation.Update(find, update)
-    if err != nil {
-        return &pb.RemoveUserResponse{Success: false}, nil
-    }
-
-    //Find index of user id in project
-    for i, num := range projectUsers.Users {
-        if( strings.Compare( num, remUReq.Useremail ) == 0 ) {
-            projectUsers.Users[i] = "0"
+        if userInfo == &pb.UserTuple{} {
+            log.Println("Failed to retrieve user's first name and email")
+            return &pb.GetProjectMembersResponse{Success: false}, nil
         }
+        //append this user's first name and email to our array of tuples
+        users = append(users, userInfo)
     }
-    //Update project
-    update = bson.M{"$set": bson.M{"users": projectUsers.Users}}
 
-    err = ProjC.Operation.Update(findId, update)
+    //return success and the array of tuples
+    return &pb.GetProjectMembersResponse{Success: true, Users: users}, nil
+}
+
+func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (*pb.InviteUserResponse, error) {
+
+    //get user's invitations
+    invites := userInvites{}
+    findId := bson.M{"email": invite.ReceipientEmail}
+    err := UserC.Operation.Find(findId).One(invites)
     if err != nil {
-        return &pb.RemoveUserResponse{Success: false}, nil
+        log.Println("Finding user based on given email failed")
+        return &pb.InviteUserResponse{Success: false}, nil
     }
-    //Otherwise success
-    return &pb.RemoveUserResponse{Success: true}, nil
+
+    //get the project based on the project id
+    projTitle := projectT{}
+    findId = bson.M{"xid": invite.Projectid}
+    err = ProjC.Operation.Find(findId).One(projTitle)
+    if err != nil {
+        log.Println("Finding project based on given xid failed")
+        return &pb.InviteUserResponse{Success: false}, nil
+    }
+
+    //add the new invitation, and update the database
+    invites = append(invites, invite.SenderEmail + "invited you to join " + projTitle.Title)
+    err = UserC.Operation.Update(findId, bson.M{"invitations": invites})
+    if err != nil {
+        log.Println("Updating user's invitations failed")
+        return &pb.InviteUserResponse{Success: false}, nil
+    }
+
+    //return success
+    return &pb.InviteUserResponse{Success: false}, nil
+    
 }
 
-func (s *server) Announcement( ctx context.Context, annReq *pb.AnnouncementRequest) (*pb.AnnouncementResponse, error) {
-    return &pb.AnnouncementResponse{}, nil
+func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementRequest) (*pb.AnnouncementResponse, error) {
+	return &pb.AnnouncementResponse{}, nil
 }
 
-func (s *server) TransferLeader( ctx context.Context, tlReq *pb.TransferLeaderRequest) (*pb.TransferLeaderResponse, error) {
-    return &pb.TransferLeaderResponse{}, nil
+func (s *server) TransferLeader(ctx context.Context, tlReq *pb.TransferLeaderRequest) (*pb.TransferLeaderResponse, error) {
+	return &pb.TransferLeaderResponse{}, nil
 }
