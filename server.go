@@ -147,6 +147,11 @@ func (s *server) AddMilestone( ctx context.Context, addMileReq *pb.AddMilestoneR
 
     //Update project
     milestones.Milestones = append(milestones.Milestones,xid)
+    update := bson.M{"$set": bson.M{"milestones": milestones.Milestones}}
+    err = ProjC.Operation.Update(find, update)
+    if err != nil {
+		return &pb.AddMilestoneResponse{Success: false}, nil
+	}
     //Update progress bar
 	err = updateProgressBar(addMileReq.Projectid)
 	if err != nil {
