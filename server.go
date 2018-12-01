@@ -42,12 +42,17 @@ type projectM struct {
 
 //Struct to handle user invitations
 type userInvites struct {
-    Invitations []string `json:"invitations" bson:"invitations"`
+	Invitations []string `json:"invitations" bson:"invitations"`
 }
 
 //Struct to handle user invitations
 type projectT struct {
-    Title string `json:"title" bson:"title"`
+	Title string `json:"title" bson:"title"`
+}
+
+//Struct to handle user invitations
+type projectA struct {
+	Announcements []string `json:"announcements" bson:"announcements"`
 }
 
 //Struct to handle Milestone Weight
@@ -307,15 +312,6 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 		return &pb.AddUserResponse{Success: false}, nil
 	}
 
-	//Fetch project
-	projectUsers := &projectU{}
-	findId := bson.M{"xid": addUReq.Projectid}
-
-	err = ProjC.Operation.Find(findId).One(projectUsers)
-	if err != nil {
-		log.Println("Couldn't find project.")
-		return &pb.AddUserResponse{Success: false}, nil
-	}
 	//Add project to user and update
 	userProjects.CurrentProjects = append(userProjects.CurrentProjects, addUReq.Projectid)
 
@@ -323,6 +319,16 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 	err = UserC.Operation.Update(find, update)
 	if err != nil {
 		log.Println("User update failed")
+		return &pb.AddUserResponse{Success: false}, nil
+	}
+
+	//Fetch project
+	projectUsers := &projectU{}
+	findId := bson.M{"xid": addUReq.Projectid}
+
+	err = ProjC.Operation.Find(findId).One(projectUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
 		return &pb.AddUserResponse{Success: false}, nil
 	}
 
@@ -343,19 +349,9 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 	//Fetch User
 	userProjects := &userP{}
 	find := bson.M{"email": remUReq.Useremail}
-
 	err := UserC.Operation.Find(find).One(userProjects)
 	if err != nil {
 		log.Println("Couldn't find user.")
-		return &pb.RemoveUserResponse{Success: false}, nil
-	}
-
-	//Fetch project
-	projectUsers := &projectU{}
-	findId := bson.M{"xid": remUReq.Projectid}
-	err = ProjC.Operation.Find(findId).One(projectUsers)
-	if err != nil {
-		log.Println("Couldn't find project.")
 		return &pb.RemoveUserResponse{Success: false}, nil
 	}
 
@@ -366,11 +362,20 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 			userProjects.CurrentProjects = userProjects.CurrentProjects[:len(userProjects.CurrentProjects)-1]
 		}
 	}
+
 	//Update user
 	update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects}}
-
 	err = UserC.Operation.Update(find, update)
 	if err != nil {
+		return &pb.RemoveUserResponse{Success: false}, nil
+	}
+
+	//Fetch project
+	projectUsers := &projectU{}
+	findId := bson.M{"xid": remUReq.Projectid}
+	err = ProjC.Operation.Find(findId).One(projectUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
 		return &pb.RemoveUserResponse{Success: false}, nil
 	}
 
@@ -424,66 +429,183 @@ func (s *server) RejectUser(ctx context.Context, rejUsrReq *pb.RejectUserRequest
 
 func (s *server) GetProjectMembers(ctx context.Context, currMembs *pb.GetProjectMembersRequest) (*pb.GetProjectMembersResponse, error) {
 
-    //for each email, find the user of that email and get it's first name and email
-    users  := []*pb.UserTuple{}
-    for _, currEmail := range currMembs.CurrentMembers {
-        //get this user's email and first name
-        userInfo := &pb.UserTuple{}
-        findId := bson.M{"email": currEmail}
-        err := UserC.Operation.Find(findId).One(userInfo)
-        if err != nil {
-            log.Println("Finding user based on given email failed")
-            return &pb.GetProjectMembersResponse{Success: false}, nil
-        }
-        if userInfo.Email == "" || userInfo.FirstName == "" {
-            log.Println("Failed to retrieve user's first name and email")
-            return &pb.GetProjectMembersResponse{Success: false}, nil
-        }
-        //append this user's first name and email to our array of tuples
-        users = append(users, userInfo)
-    }
+	//for each email, find the user of that email and get it's first name and email
+	users := []*pb.UserTuple{}
+	for _, currEmail := range currMembs.CurrentMembers {
+		//get this user's email and first name
+		userInfo := &pb.UserTuple{}
+		findID := bson.M{"email": currEmail}
+		err := UserC.Operation.Find(findID).One(userInfo)
+		if err != nil {
+			log.Println("Finding user based on given email failed")
+			return &pb.GetProjectMembersResponse{Success: false}, nil
+		}
+		if userInfo.Email == "" || userInfo.FirstName == "" {
+			log.Println("Failed to retrieve user's first name and email")
+			return &pb.GetProjectMembersResponse{Success: false}, nil
+		}
+		//append this user's first name and email to our array of tuples
+		users = append(users, userInfo)
+	}
 
-    //return success and the array of tuples
-    return &pb.GetProjectMembersResponse{Success: true, Users: users}, nil
+	//return success and the array of tuples
+	return &pb.GetProjectMembersResponse{Success: true, Users: users}, nil
 }
 
 func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (*pb.InviteUserResponse, error) {
 
-    //get user's invitations
-    invites := userInvites{}
-    findId := bson.M{"email": invite.ReceipientEmail}
-    err := UserC.Operation.Find(findId).One(invites)
-    if err != nil {
-        log.Println("Finding user based on given email failed")
-        return &pb.InviteUserResponse{Success: false}, nil
-    }
+	//get user's invitations
+	invites := userInvites{}
+	findID := bson.M{"email": invite.ReceipientEmail}
+	err := UserC.Operation.Find(findID).One(invites)
+	if err != nil {
+		log.Println("Finding user based on given email failed")
+		return &pb.InviteUserResponse{Success: false}, nil
+	}
 
-    //get the project based on the project id
-    projTitle := projectT{}
-    findId = bson.M{"xid": invite.Projectid}
-    err = ProjC.Operation.Find(findId).One(projTitle)
-    if err != nil {
-        log.Println("Finding project based on given xid failed")
-        return &pb.InviteUserResponse{Success: false}, nil
-    }
+	//get the project based on the project id
+	projTitle := projectT{}
+	find := bson.M{"xid": invite.Projectid}
+	err = ProjC.Operation.Find(find).One(projTitle)
+	if err != nil {
+		log.Println("Finding project based on given xid failed")
+		return &pb.InviteUserResponse{Success: false}, nil
+	}
 
-    //add the new invitation, and update the database
-    invites.Invitations = append(invites.Invitations, invite.SenderEmail + "invited you to join " + projTitle.Title)
-    err = UserC.Operation.Update(findId, bson.M{"invitations": invites})
-    if err != nil {
-        log.Println("Updating user's invitations failed")
-        return &pb.InviteUserResponse{Success: false}, nil
-    }
+	//add the new invitation, and update the database
+	invites.Invitations = append(invites.Invitations, invite.SenderEmail+"invited you to join "+projTitle.Title)
+	err = UserC.Operation.Update(findID, bson.M{"invitations": invites})
+	if err != nil {
+		log.Println("Updating user's invitations failed")
+		return &pb.InviteUserResponse{Success: false}, nil
+	}
 
-    //return success
-    return &pb.InviteUserResponse{Success: false}, nil
-    
+	//return success
+	return &pb.InviteUserResponse{Success: true, Projectid: invite.Projectid}, nil
+
+}
+
+func (s *server) RejectInvitation(ctx context.Context, invite *pb.RejectInviteRequest) (*pb.RejectInviteResponse, error) {
+
+	//get user's invitations
+	invites := userInvites{}
+	findID := bson.M{"email": invite.Email}
+	err := UserC.Operation.Find(findID).One(invites)
+	if err != nil {
+		log.Println("Finding user based on given email failed")
+		return &pb.RejectInviteResponse{Success: false}, nil
+	}
+
+	//add the new invitation
+	for i, currInvite := range invites.Invitations {
+		//check if the email and the title are in this invitation, and remove it once found
+		if currInvite == invites.Invitations[i] {
+			invites.Invitations[i] = invites.Invitations[len(invites.Invitations)-1]
+			invites.Invitations = invites.Invitations[:len(invites.Invitations)-1]
+			break
+		}
+	}
+
+	//update the database
+	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations})
+	if err != nil {
+		log.Println("Updating user's invitations failed")
+		return &pb.RejectInviteResponse{Success: false}, nil
+	}
+
+	//return success
+	return &pb.RejectInviteResponse{Success: true}, nil
+
+}
+
+func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRequest) (*pb.AcceptInviteResponse, error) {
+
+	//Fetch project
+	projectUsers := &projectU{}
+	find := bson.M{"xid": invite.Email}
+	err := ProjC.Operation.Find(find).One(projectUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
+		return &pb.AcceptInviteResponse{Success: false}, nil
+	}
+
+	//Add project to user and update
+	projectUsers.Users = append(projectUsers.Users, invite.Email)
+	update := bson.M{"$set": bson.M{"memberslist": projectUsers.Users}}
+	err = ProjC.Operation.Update(find, update)
+	if err != nil {
+		log.Println("User update failed")
+		return &pb.AcceptInviteResponse{Success: false}, nil
+	}
+
+	//get user's invitations
+	invites := userInvites{}
+	findID := bson.M{"email": invite.Email}
+	err = UserC.Operation.Find(findID).One(invites)
+	if err != nil {
+		log.Println("Finding user based on given email failed")
+		return &pb.AcceptInviteResponse{Success: false}, nil
+	}
+
+	//add the new invitation
+	for i, currInvite := range invites.Invitations {
+		//check if the email and the title are in this invitation, and remove it once found
+		if currInvite == invites.Invitations[i] {
+			invites.Invitations[i] = invites.Invitations[len(invites.Invitations)-1]
+			invites.Invitations = invites.Invitations[:len(invites.Invitations)-1]
+			break
+		}
+	}
+
+	//update the database
+	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations})
+	if err != nil {
+		log.Println("Updating user's invitations failed")
+		return &pb.AcceptInviteResponse{Success: false}, nil
+	}
+
+	//return success
+	return &pb.AcceptInviteResponse{Success: true}, nil
+
 }
 
 func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementRequest) (*pb.AnnouncementResponse, error) {
-	return &pb.AnnouncementResponse{}, nil
+
+	//retrieve project
+	oldAnnouncements := &projectA{}
+	find := bson.M{"xid": annReq.Projectid}
+	err := ProjC.Operation.Find(find).One(oldAnnouncements)
+	if err != nil {
+		log.Println("Finding project based on given xid failed")
+		return &pb.AnnouncementResponse{Success: false}, nil
+	}
+	//determine whether to add the post to the top or the bottom of the announcements
+	if annReq.Pin {
+		begin := []string{annReq.Message}
+		oldAnnouncements.Announcements = append(begin, oldAnnouncements.Announcements...)
+	} else {
+		oldAnnouncements.Announcements = append(oldAnnouncements.Announcements, annReq.Message)
+	}
+
+	//update the database
+	err = ProjC.Operation.Update(find, bson.M{"announcements": oldAnnouncements.Announcements})
+	if err != nil {
+		log.Println("Updating projects invitations failed")
+		return &pb.AnnouncementResponse{Success: false}, nil
+	}
+
+	return &pb.AnnouncementResponse{Success: true}, nil
 }
 
 func (s *server) TransferLeader(ctx context.Context, tlReq *pb.TransferLeaderRequest) (*pb.TransferLeaderResponse, error) {
-	return &pb.TransferLeaderResponse{}, nil
+
+	//update the leadership
+	findID := bson.M{"xid:": tlReq.Projectid}
+	err := ProjC.Operation.Update(findID, bson.M{"projectleader": tlReq.Newleader})
+	if err != nil {
+		log.Println("Finding project based on given xid failed")
+		return &pb.TransferLeaderResponse{Success: false}, nil
+	}
+
+	return &pb.TransferLeaderResponse{Success: true}, nil
 }

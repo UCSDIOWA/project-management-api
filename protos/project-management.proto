@@ -81,6 +81,20 @@ service ProjectManagementAPI {
             body: "*"
         };
     }
+
+    rpc AcceptInvitation (AcceptInviteRequest) returns (AcceptInviteResponse) {
+        option (google.api.http) = {
+            post: "/acceptinvitation"
+            body: "*"
+        };
+    }
+
+    rpc RejectInvitation (RejectInviteRequest) returns (RejectInviteResponse) {
+        option (google.api.http) = {
+            post: "/rejectinvitation"
+            body: "*"
+        };
+    }
 }
 
 message MilestoneModel {
@@ -158,6 +172,27 @@ message InviteUserRequest {
 
 message InviteUserResponse {
     bool success = 1;
+    string projectid = 2;
+}
+
+message AcceptInviteRequest {
+    string email = 1;
+    string invite = 2;
+    string projectid = 3;
+}
+
+message AcceptInviteResponse {
+    bool success = 1;
+}
+
+message RejectInviteRequest {
+    string email = 1;
+    string invite = 2;
+    string projectid = 3;
+}
+
+message RejectInviteResponse {
+    bool success = 1;
 }
 
 message AddUserRequest {
@@ -189,7 +224,7 @@ message RejectUserResponse {
 
 message TransferLeaderRequest {
     string projectid = 1;
-    string new_leader = 2;
+    string newleader = 2;
 }
 
 message TransferLeaderResponse {
@@ -198,9 +233,8 @@ message TransferLeaderResponse {
 
 message AnnouncementRequest {
     string projectid = 1;
-    string announcementid = 2;
-    string title = 3;
-    string description = 4;
+    string message = 2;
+    bool pin = 3;
 }
 
 message AnnouncementResponse {
