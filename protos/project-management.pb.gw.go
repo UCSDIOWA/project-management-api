@@ -130,6 +130,40 @@ func request_ProjectManagementAPI_RemoveUser_0(ctx context.Context, marshaler ru
 
 }
 
+func request_ProjectManagementAPI_RejectUser_0(ctx context.Context, marshaler runtime.Marshaler, client ProjectManagementAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq RejectUserRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.RejectUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func request_ProjectManagementAPI_GetProjectMembers_0(ctx context.Context, marshaler runtime.Marshaler, client ProjectManagementAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetProjectMembersRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.GetProjectMembers(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
 func request_ProjectManagementAPI_TransferLeader_0(ctx context.Context, marshaler runtime.Marshaler, client ProjectManagementAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq TransferLeaderRequest
 	var metadata runtime.ServerMetadata
@@ -160,6 +194,23 @@ func request_ProjectManagementAPI_Announcement_0(ctx context.Context, marshaler 
 	}
 
 	msg, err := client.Announcement(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func request_ProjectManagementAPI_InviteUser_0(ctx context.Context, marshaler runtime.Marshaler, client ProjectManagementAPIClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq InviteUserRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.InviteUser(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
@@ -322,6 +373,46 @@ func RegisterProjectManagementAPIHandlerClient(ctx context.Context, mux *runtime
 
 	})
 
+	mux.Handle("POST", pattern_ProjectManagementAPI_RejectUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ProjectManagementAPI_RejectUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProjectManagementAPI_RejectUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_ProjectManagementAPI_GetProjectMembers_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ProjectManagementAPI_GetProjectMembers_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProjectManagementAPI_GetProjectMembers_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ProjectManagementAPI_TransferLeader_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -362,6 +453,26 @@ func RegisterProjectManagementAPIHandlerClient(ctx context.Context, mux *runtime
 
 	})
 
+	mux.Handle("POST", pattern_ProjectManagementAPI_InviteUser_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ProjectManagementAPI_InviteUser_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ProjectManagementAPI_InviteUser_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -378,9 +489,15 @@ var (
 
 	pattern_ProjectManagementAPI_RemoveUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"removeuser"}, ""))
 
+	pattern_ProjectManagementAPI_RejectUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"rejectuser"}, ""))
+
+	pattern_ProjectManagementAPI_GetProjectMembers_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"getprojectmembers"}, ""))
+
 	pattern_ProjectManagementAPI_TransferLeader_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"transferleader"}, ""))
 
 	pattern_ProjectManagementAPI_Announcement_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"announcement"}, ""))
+
+	pattern_ProjectManagementAPI_InviteUser_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"inviteuser"}, ""))
 )
 
 var (
@@ -396,7 +513,13 @@ var (
 
 	forward_ProjectManagementAPI_RemoveUser_0 = runtime.ForwardResponseMessage
 
+	forward_ProjectManagementAPI_RejectUser_0 = runtime.ForwardResponseMessage
+
+	forward_ProjectManagementAPI_GetProjectMembers_0 = runtime.ForwardResponseMessage
+
 	forward_ProjectManagementAPI_TransferLeader_0 = runtime.ForwardResponseMessage
 
 	forward_ProjectManagementAPI_Announcement_0 = runtime.ForwardResponseMessage
+
+	forward_ProjectManagementAPI_InviteUser_0 = runtime.ForwardResponseMessage
 )
