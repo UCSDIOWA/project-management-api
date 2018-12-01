@@ -27,7 +27,7 @@ type userP struct {
 
 //Struct to handle users in projects
 type projectU struct {
-	CurrentMembers []string `json:"memberslist" bson:"memberslist"`
+	Users []string `json:"memberslist" bson:"memberslist"`
 }
 
 //Struct to handle pending users in projects
@@ -342,7 +342,7 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) (*pb.RemoveUserResponse, error) {
 	//Fetch User
 	userProjects := &userP{}
-	user := bson.M{"email": remUReq.Useremail}
+	find := bson.M{"email": remUReq.Useremail}
 
 	err := UserC.Operation.Find(find).One(userProjects)
 	if err != nil {
@@ -363,13 +363,13 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 	for i, num := range userProjects.CurrentProjects {
 		if strings.Compare(num, remUReq.Projectid) == 0 {
 			userProjects.CurrentProjects[i] = userProjects.CurrentProjects[len(userProjects.CurrentProjects)-1]
-			userProjects.CurrentProjects = userProjects.CurrentProjects[:len(user)-1]
+			userProjects.CurrentProjects = userProjects.CurrentProjects[:len(userProjects.CurrentProjects)-1]
 		}
 	}
 	//Update user
 	update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects}}
 
-	err = UserC.Operation.Update(user, update)
+	err = UserC.Operation.Update(find, update)
 	if err != nil {
 		return &pb.RemoveUserResponse{Success: false}, nil
 	}
@@ -377,7 +377,7 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 	//Find index of user id in project
 	for i, num := range projectUsers.Users {
 		if strings.Compare(num, remUReq.Useremail) == 0 {
-			projectUsers.Users[i] = projectUsers.Users[len(projectUsers.users)]
+			projectUsers.Users[i] = projectUsers.Users[len(projectUsers.Users)]
 		}
 	}
 	//Update project
@@ -397,7 +397,7 @@ func (s *server) RejectUser(ctx context.Context, rejUsrReq *pb.RejectUserRequest
 	pendingUsers := &userJoinReqs{}
 	findId := bson.M{"xid": rejUsrReq.Projectid}
 
-	err = ProjC.Operation.Find(findId).One(pendingUsers)
+	err := ProjC.Operation.Find(findId).One(pendingUsers)
 	if err != nil {
 		log.Println("Couldn't find project.")
 		return &pb.RejectUserResponse{Success: false}, nil
@@ -405,13 +405,13 @@ func (s *server) RejectUser(ctx context.Context, rejUsrReq *pb.RejectUserRequest
 
 	//Remove user from pending users in project and update
 	for i, usr := range pendingUsers.JoinRequests {
-		if usr == rejUsrReq.useremail {
-			pendingUsers[i] = pendingUsers[len(pendingUsers)-1]
-			pendingUsers = pendingUsers[:len(pendingUsers)-1]
+		if usr == rejUsrReq.Useremail {
+			pendingUsers.JoinRequests[i] = pendingUsers.JoinRequests[len(pendingUsers.JoinRequests)-1]
+			pendingUsers.JoinRequests = pendingUsers.JoinRequests[:len(pendingUsers.JoinRequests)-1]
 			break
 		}
 	}
-	update = bson.M{"$set": bson.M{"joinrequests": pendingUsers.JoinRequests}}
+	update := bson.M{"$set": bson.M{"joinrequests": pendingUsers.JoinRequests}}
 	err = ProjC.Operation.Update(findId, update)
 	if err != nil {
 		log.Println("Project update with new Pending-Users failed")
@@ -425,17 +425,17 @@ func (s *server) RejectUser(ctx context.Context, rejUsrReq *pb.RejectUserRequest
 func (s *server) GetProjectMembers(ctx context.Context, currMembs *pb.GetProjectMembersRequest) (*pb.GetProjectMembersResponse, error) {
 
     //for each email, find the user of that email and get it's first name and email
-    users = [](&pb.UserTuple{})
+    users  := []*pb.UserTuple{}
     for _, currEmail := range currMembs.CurrentMembers {
         //get this user's email and first name
-        userInfo = &pb.UserTuple{}
-        findId := bson.M{"email": rejUsrReq.Projectid}
-        err = UserC.Operation.Find(findId).One(userInfo)
+        userInfo := &pb.UserTuple{}
+        findId := bson.M{"email": currEmail}
+        err := UserC.Operation.Find(findId).One(userInfo)
         if err != nil {
             log.Println("Finding user based on given email failed")
             return &pb.GetProjectMembersResponse{Success: false}, nil
         }
-        if userInfo == &pb.UserTuple{} {
+        if userInfo.Email == "" || userInfo.FirstName == "" {
             log.Println("Failed to retrieve user's first name and email")
             return &pb.GetProjectMembersResponse{Success: false}, nil
         }
@@ -468,7 +468,7 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
     }
 
     //add the new invitation, and update the database
-    invites = append(invites, invite.SenderEmail + "invited you to join " + projTitle.Title)
+    invites.Invitations = append(invites.Invitations, invite.SenderEmail + "invited you to join " + projTitle.Title)
     err = UserC.Operation.Update(findId, bson.M{"invitations": invites})
     if err != nil {
         log.Println("Updating user's invitations failed")
