@@ -2,8 +2,11 @@ package main
 
 import (
 	"context"
+	"flag"
 	"log"
 	"net"
+	"net/http"
+	"os"
 	"strings"
 
 	//    "flag"
@@ -13,6 +16,8 @@ import (
 	pb "github.com/UCSDIOWA/project-management-api/protos"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
+	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	//    "github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -70,7 +75,7 @@ var (
 	ProjC *mongo
 	MileC *mongo
 
-	//echoEndpoint = flag.String("echo_endpoint", "localhost:50052", "endpoint of project-management-api")
+	echoEndpoint = flag.String("echo_endpoint", "localhost:50052", "endpoint of project-management-api")
 )
 
 func main() {
@@ -80,12 +85,12 @@ func main() {
 		errors <- startGRPC()
 	}()
 
-	/*go func() {
-	    flag.Parse()
-	    defer glog.Flush()
+	go func() {
+		flag.Parse()
+		defer glog.Flush()
 
-	    errors <- startHTTP()
-	}()*/
+		errors <- startHTTP()
+	}()
 
 	for err := range errors {
 		log.Fatal(err)
@@ -126,27 +131,27 @@ func startGRPC() error {
 	return err
 }
 
-/*func startHTTP() error {
-    ctx := context.Background()
-    ctx, cancel := context.WithCancel(ctx)
-    defer cancel()
+func startHTTP() error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
-    mux := runtime.NewServeMux()
-    opts :=[]grpc.DialOptioin{grpc.WithInsecure()}
-    err := pb.RegisterProjectManagementAPIHandlerFromEndPoint(ctx, mux, *echoEndpoint, opts)
-    if err != nil {
-        return err
-    }
+	mux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+	err := pb.RegisterProjectManagementAPIHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
+	if err != nil {
+		return err
+	}
 
-    log.Println("Listening on port 8080")
+	log.Println("Listening on port 8080")
 
-    herokuPort := os.Getenv("PORT")
-    if herokuPort == "" {
-        herokyPort = "8080"
-    }
+	herokuPort := os.Getenv("PORT")
+	if herokuPort == "" {
+		herokuPort = "8080"
+	}
 
-    return http.ListenAndServe(":"+herokyPort, mux)
-}*/
+	return http.ListenAndServe(":"+herokuPort, mux)
+}
 
 func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRequest) (*pb.AddMilestoneResponse, error) {
 	xid := bson.NewObjectId().Hex()
