@@ -166,13 +166,12 @@ message UserTuple {
 
 message InviteUserRequest {
     string projectid = 1;
-    string receipientEmail = 2;
-    string senderEmail = 3;
+    string receipientemail = 2;
+    string senderemail = 3;
 }
 
 message InviteUserResponse {
     bool success = 1;
-    string projectid = 2;
 }
 
 message AcceptInviteRequest {

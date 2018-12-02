@@ -47,7 +47,8 @@ type projectM struct {
 
 //Struct to handle user invitations
 type userInvites struct {
-	Invitations []string `json:"invitations" bson:"invitations"`
+	Invitations    []string `json:"invitations" bson:"invitations"`
+	ProjectInvites []string `json:"projectinvites" bson:"projectinvites"`
 }
 
 //Struct to handle user invitations
@@ -57,7 +58,8 @@ type projectT struct {
 
 //Struct to handle user invitations
 type projectA struct {
-	Announcements []string `json:"announcements" bson:"announcements"`
+	PinnedAnnouncements   []string `json:"pinnedannouncements" bson:"pinnedannouncements"`
+	UnpinnedAnnouncements []string `json:"unpinnedannouncements" bson:"unpinnedannouncements"`
 }
 
 //Struct to handle Milestone Weight
@@ -461,7 +463,7 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 
 	//get user's invitations
 	invites := userInvites{}
-	findID := bson.M{"email": invite.ReceipientEmail}
+	findID := bson.M{"email": invite.Receipientemail}
 	err := UserC.Operation.Find(findID).One(invites)
 	if err != nil {
 		log.Println("Finding user based on given email failed")
@@ -478,15 +480,16 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 	}
 
 	//add the new invitation, and update the database
-	invites.Invitations = append(invites.Invitations, invite.SenderEmail+"invited you to join "+projTitle.Title)
-	err = UserC.Operation.Update(findID, bson.M{"invitations": invites})
+	invites.Invitations = append(invites.Invitations, invite.Senderemail+"invited you to join "+projTitle.Title)
+	invites.ProjectInvites = append(invites.ProjectInvites, invite.Projectid)
+	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites})
 	if err != nil {
 		log.Println("Updating user's invitations failed")
 		return &pb.InviteUserResponse{Success: false}, nil
 	}
 
 	//return success
-	return &pb.InviteUserResponse{Success: true, Projectid: invite.Projectid}, nil
+	return &pb.InviteUserResponse{Success: true}, nil
 
 }
 
@@ -527,7 +530,7 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 
 	//Fetch project
 	projectUsers := &projectU{}
-	find := bson.M{"xid": invite.Email}
+	find := bson.M{"xid": invite.Projectid}
 	err := ProjC.Operation.Find(find).One(projectUsers)
 	if err != nil {
 		log.Println("Couldn't find project.")
@@ -586,14 +589,14 @@ func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementReques
 	}
 	//determine whether to add the post to the top or the bottom of the announcements
 	if annReq.Pin {
-		begin := []string{annReq.Poster + "says " + annReq.Message}
-		oldAnnouncements.Announcements = append(begin, oldAnnouncements.Announcements...)
+		oldAnnouncements.PinnedAnnouncements = append([]string{annReq.Poster + "says " + annReq.Message}, oldAnnouncements.PinnedAnnouncements...)
 	} else {
-		oldAnnouncements.Announcements = append(oldAnnouncements.Announcements, annReq.Poster+"says "+annReq.Message)
+		oldAnnouncements.UnpinnedAnnouncements = append([]string{annReq.Poster + "says " + annReq.Message}, oldAnnouncements.UnpinnedAnnouncements...)
 	}
 
 	//update the database
-	err = ProjC.Operation.Update(find, bson.M{"announcements": oldAnnouncements.Announcements})
+	err = ProjC.Operation.Update(find, bson.M{"pinnedannouncements": oldAnnouncements.PinnedAnnouncements,
+		"unpinnedannouncements": oldAnnouncements.UnpinnedAnnouncements})
 	if err != nil {
 		log.Println("Updating projects invitations failed")
 		return &pb.AnnouncementResponse{Success: false}, nil
