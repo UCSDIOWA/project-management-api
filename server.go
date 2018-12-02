@@ -586,10 +586,10 @@ func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementReques
 	}
 	//determine whether to add the post to the top or the bottom of the announcements
 	if annReq.Pin {
-		begin := []string{annReq.Message}
+		begin := []string{annReq.Poster + "says " + annReq.Message}
 		oldAnnouncements.Announcements = append(begin, oldAnnouncements.Announcements...)
 	} else {
-		oldAnnouncements.Announcements = append(oldAnnouncements.Announcements, annReq.Message)
+		oldAnnouncements.Announcements = append(oldAnnouncements.Announcements, annReq.Poster+"says "+annReq.Message)
 	}
 
 	//update the database
