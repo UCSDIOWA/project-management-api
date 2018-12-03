@@ -18,6 +18,7 @@ import (
 	"github.com/globalsign/mgo/bson"
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/rs/cors"
 
 	//    "github.com/golang/glog"
 	"google.golang.org/grpc"
@@ -25,13 +26,17 @@ import (
 
 type server struct{}
 
-//Struct to handle current projects of user
-type userP struct {
+//Struct to handle user collection
+type user struct {
+	Invitations    []string `json:"invitations" bson:"invitations"`
+	ProjectInvites []string `json:"projectinvites" bson:"projectinvites"`
+	Notifications []string `json:"notifications" bson:"notifications"`
 	CurrentProjects []string `json:"currentprojects" bson:"currentprojects"`
 }
 
 //Struct to handle users in projects
 type projectU struct {
+	Title string `json:"title" bson:"title"`
 	Users []string `json:"memberslist" bson:"memberslist"`
 }
 
@@ -43,12 +48,6 @@ type userJoinReqs struct {
 //Struct to handle project milestones
 type projectM struct {
 	Milestones []string `json:"milestones" bson:"milestones"`
-}
-
-//Struct to handle user invitations
-type userInvites struct {
-	Invitations    []string `json:"invitations" bson:"invitations"`
-	ProjectInvites []string `json:"projectinvites" bson:"projectinvites"`
 }
 
 //Struct to handle user invitations
@@ -138,21 +137,30 @@ func startHTTP() error {
 	ctx, cancel := context.WithCancel(ctx)
 	defer cancel()
 
-	mux := runtime.NewServeMux()
+	gwmux := runtime.NewServeMux()
 	opts := []grpc.DialOption{grpc.WithInsecure()}
-	err := pb.RegisterProjectManagementAPIHandlerFromEndpoint(ctx, mux, *echoEndpoint, opts)
+	err := pb.RegisterProjectManagementAPIHandlerFromEndpoint(ctx, gwmux, *echoEndpoint, opts)
 	if err != nil {
 		return err
 	}
 
 	log.Println("Listening on port 8080")
 
+	mux := http.NewServeMux()
+	mux.HandleFunc("/.*", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST")
+	})
+	mux.Handle("/", gwmux)
+	handler := cors.Default().Handler(mux)
+
 	herokuPort := os.Getenv("PORT")
 	if herokuPort == "" {
 		herokuPort = "8080"
 	}
 
-	return http.ListenAndServe(":"+herokuPort, mux)
+	return http.ListenAndServe(":"+herokuPort, handler)
 }
 
 func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRequest) (*pb.AddMilestoneResponse, error) {
@@ -310,7 +318,7 @@ func (s *server) DeleteMilestone(ctx context.Context, delMileReq *pb.DeleteMiles
 
 func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.AddUserResponse, error) {
 	//Fetch User
-	userProjects := &userP{}
+	userProjects := &user{}
 	find := bson.M{"email": addUReq.Useremail}
 
 	err := UserC.Operation.Find(find).One(userProjects)
@@ -319,24 +327,40 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 		return &pb.AddUserResponse{Success: false}, nil
 	}
 
-	//Add project to user and update
-	userProjects.CurrentProjects = append(userProjects.CurrentProjects, addUReq.Projectid)
+	//Fetch project
+	projectUsers := &projectU{}
+	findId := bson.M{"xid": addUReq.Projectid}
+	err = ProjC.Operation.Find(findId).One(projectUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
+		return &pb.AddUserResponse{Success: false}, nil
+	}
 
-	update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects}}
+	//Add project to user and update current projects and notifications
+	userProjects.CurrentProjects = append(userProjects.CurrentProjects, addUReq.Projectid)
+	userProjects.Notifications = append([]string{"You've been added to the project " + projectUsers.Title}, userProjects.Notifications...)
+	update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects, "notifications": userProjects.Notifications}}
 	err = UserC.Operation.Update(find, update)
 	if err != nil {
 		log.Println("User update failed")
 		return &pb.AddUserResponse{Success: false}, nil
 	}
 
-	//Fetch project
-	projectUsers := &projectU{}
-	findId := bson.M{"xid": addUReq.Projectid}
-
-	err = ProjC.Operation.Find(findId).One(projectUsers)
-	if err != nil {
-		log.Println("Couldn't find project.")
-		return &pb.AddUserResponse{Success: false}, nil
+	//send notifications to all of the members of the group
+	for _,usr := range projectUsers.Users{
+		userProjects := &user{}
+		find = bson.M{"email": usr}
+		err = UserC.Operation.Find(find).One(userProjects)
+		if err != nil {
+			log.Println("Couldn't find user.")
+			return &pb.AddUserResponse{Success: false}, nil
+		}
+		userProjects.Notifications = append(userProjects.Notifications,  addUReq.Useremail + " has been added to the project " + projectUsers.Title)
+		err = UserC.Operation.Update(bson.M{"email": usr}, bson.M{"notifications": userProjects.Notifications})
+		if err != nil {
+			log.Println("User update failed")
+			return &pb.AddUserResponse{Success: false}, nil
+		}
 	}
 
 	//Add user to project and update
@@ -354,7 +378,7 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 
 func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) (*pb.RemoveUserResponse, error) {
 	//Fetch User
-	userProjects := &userP{}
+	userProjects := &user{}
 	find := bson.M{"email": remUReq.Useremail}
 	err := UserC.Operation.Find(find).One(userProjects)
 	if err != nil {
@@ -447,7 +471,7 @@ func (s *server) GetProjectMembers(ctx context.Context, currMembs *pb.GetProject
 			log.Println("Finding user based on given email failed")
 			return &pb.GetProjectMembersResponse{Success: false}, nil
 		}
-		if userInfo.Email == "" || userInfo.FirstName == "" {
+		if userInfo.Email == "" || userInfo.Firstname == "" {
 			log.Println("Failed to retrieve user's first name and email")
 			return &pb.GetProjectMembersResponse{Success: false}, nil
 		}
@@ -462,7 +486,7 @@ func (s *server) GetProjectMembers(ctx context.Context, currMembs *pb.GetProject
 func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (*pb.InviteUserResponse, error) {
 
 	//get user's invitations
-	invites := userInvites{}
+	invites := user{}
 	findID := bson.M{"email": invite.Receipientemail}
 	err := UserC.Operation.Find(findID).One(invites)
 	if err != nil {
@@ -479,9 +503,10 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 		return &pb.InviteUserResponse{Success: false}, nil
 	}
 
-	//add the new invitation, and update the database
+	//add the new invitation and notification, and update the database
 	invites.Invitations = append(invites.Invitations, invite.Senderemail+"invited you to join "+projTitle.Title)
 	invites.ProjectInvites = append(invites.ProjectInvites, invite.Projectid)
+	invites.Notifications = append([]string{invite.Senderemail+"invited you to join "+projTitle.Title}, invites.Notifications...)
 	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites})
 	if err != nil {
 		log.Println("Updating user's invitations failed")
@@ -496,7 +521,7 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 func (s *server) RejectInvitation(ctx context.Context, invite *pb.RejectInviteRequest) (*pb.RejectInviteResponse, error) {
 
 	//get user's invitations
-	invites := userInvites{}
+	invites := user{}
 	findID := bson.M{"email": invite.Email}
 	err := UserC.Operation.Find(findID).One(invites)
 	if err != nil {
@@ -547,7 +572,7 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 	}
 
 	//get user's invitations
-	invites := userInvites{}
+	invites := user{}
 	findID := bson.M{"email": invite.Email}
 	err = UserC.Operation.Find(findID).One(invites)
 	if err != nil {
@@ -616,4 +641,25 @@ func (s *server) TransferLeader(ctx context.Context, tlReq *pb.TransferLeaderReq
 	}
 
 	return &pb.TransferLeaderResponse{Success: true}, nil
+}
+
+func (s *server) RemoveNotification(ctx context.Context, nReq *pb.RemoveNotificationRequest) (*pb.RemoveNotificationResponse, error) {
+
+	//remove the notification
+	userNotifications := user{}
+	findID := bson.M{"email:": nReq.User}
+	for i, notif := range userNotifications.Notifications {
+		//check when we find notification
+		if notif == nReq.Notification {
+			userNotifications.Notifications[i] = (userNotifications.Notifications[len(userNotifications.Notifications)-1])
+			userNotifications.Notifications = userNotifications.Notifications[:len(userNotifications.Notifications)-1]
+		}
+	}
+	err := UserC.Operation.Update(findID, bson.M{"notifications": userNotifications.Notifications})
+	if err != nil {
+		log.Println("Finding user and updating their notifications based on given email failed")
+		return &pb.RemoveNotificationResponse{Success: false}, nil
+	}
+
+	return &pb.RemoveNotificationResponse{Success: true}, nil
 }

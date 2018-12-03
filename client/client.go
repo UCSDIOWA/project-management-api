@@ -25,11 +25,11 @@ func main() {
 
 	//Handling Join Requests
 	//r, err := c.AddUser(ctx, &pb.AddUserRequest{Projectid: "5c022cc6231ff4000486bd81", Useremail: "test@ucsd.edu"})
-	//r, err := c.RemoveUser( context.Background(), &pb.RemoveUserRequest{ Projectid: "5c022cc6231ff4000486bd81", Useremail:"test@ucsd.edu" })
+	//r, err := c.RemoveUser( context.Background(), &pb.RemoveUserRequest{Projectid: "5c022cc6231ff4000486bd81", Useremail:"test@ucsd.edu" })
 	//r, err := c.RejectUser(ctx, &pb.RejectUserRequest{Projectid: "5c022cc6231ff4000486bd81", Useremail: "test@ucsd.edu"})
 
 	//Handling Invitations
-	//r, err := c.InviteUserRequest(ctx, &pb.InviteUserRequest{Projectid:: "test@ucsd.edu", RecipientEmail: "test2@ucsd.edu", SenderEmail: "test@ucsd.edu"})
+	//r, err := c.InviteUserRequest(ctx, &pb.InviteUserRequest{Projectid:: "5c022cc6231ff4000486bd81", RecipientEmail: "test2@ucsd.edu", SenderEmail: "test@ucsd.edu"})
 	//r, err := c.AcceptInvitationRequest(ctx, &pb.AcceptUserRequest{Email: "test@ucsd.edu", Invite: "test2@ucsd.edu invited you to join Easy Like Sunday Mornin' ", Projectid: "5c022cc6231ff4000486bd81"})
 	//r, err := c.RejectInvitationRequest(ctx, &pb.RejectUserRequest{Email: "test@ucsd.edu", Invite: "test2@ucsd.edu invited you to join Easy Like Sunday Mornin' ", Projectid: "5c022cc6231ff4000486bd81"})
 
@@ -40,14 +40,17 @@ func main() {
 	//r, err := c.DeleteMilestone(context.Background(), &pb.DeleteMilestoneRequest{Projectid: "5c022cc6231ff4000486bd81" , Milestoneid: "5bff88d87881e70dc4593187"})
 
 	//Handling Announcements
-	//r, err := c.Announcement(ctx, &pb.Announcement{Projectid: "5c022cc6231ff4000486bd81", Poster: "test@ucsd.edu", Message: "says please finish this", Pin: true})
-	//r, err := c.Announcement(ctx, &pb.Announcement{Projectid: "5c022cc6231ff4000486bd81", Poster: "test@ucsd.edu", Message: "says please finish this", Pin: false})
+	//r, err := c.Announcement(ctx, &pb.AnnouncementRequest{Projectid: "5c022cc6231ff4000486bd81", Poster: "test@ucsd.edu", Message: "says please finish this", Pin: true})
+	//r, err := c.Announcement(ctx, &pb.AnnouncementRequest{Projectid: "5c022cc6231ff4000486bd81", Poster: "test@ucsd.edu", Message: "says please finish this", Pin: false})
 
 	//Handling TransferLeadership
 	//r, err := c.TransferLeader(ctx, &pb.TransferLeaderRequest{Projectid: "5c022cc6231ff4000486bd81", Newleader: "test@ucsd.edu"})
 
 	//Handling GetProjectMembers
-	r, err := c.GetProjectMembers(ctx, &pb.GetProjectMembersRequest{Projectid: "5c022cc6231ff4000486bd81", CurrentMembers: []string{"test@ucsd.edu"}})
+	//r, err := c.GetProjectMembers(ctx, &pb.GetProjectMembersRequest{Projectid: "5c030b4011ffc7ec9dfb7cdb", CurrentMembers: []string{"test@ucsd.edu"}})
+
+	//Handling RemoveNotifications
+	r, err := c.RemoveNotification(ctx, &pb.RemoveNotificationRequest{Notification: "test2@ucsd.edu invited you to join Easy Like Sunday Mornin' ", User: "test2@ucsd.edu"})
 
 	if err != nil {
 		log.Println("An err occurred.")

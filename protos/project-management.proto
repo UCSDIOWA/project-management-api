@@ -95,6 +95,13 @@ service ProjectManagementAPI {
             body: "*"
         };
     }
+
+    rpc RemoveNotification (RemoveNotificationRequest) returns (RemoveNotificationResponse) {
+        option (google.api.http) = {
+            post: "/removenotification"
+            body: "*"
+        };
+    }
 }
 
 message MilestoneModel {
@@ -161,7 +168,7 @@ message GetProjectMembersResponse {
 
 message UserTuple {
     string email = 1;
-    string firstName = 2;
+    string firstname = 2;
 }
 
 message InviteUserRequest {
@@ -238,5 +245,14 @@ message AnnouncementRequest {
 }
 
 message AnnouncementResponse {
+    bool success = 1;
+}
+
+message RemoveNotificationRequest {
+    string notification = 1;
+    string user = 2;
+}
+
+message RemoveNotificationResponse{
     bool success = 1;
 }
