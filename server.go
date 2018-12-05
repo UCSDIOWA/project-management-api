@@ -95,23 +95,20 @@ func main() {
 }
 
 func startGRPC() error {
-	//Host mongo server
+	// Host mongo server
 	m, err := mgo.Dial("127.0.0.1:27017")
 	if err != nil {
-		log.Fatalf("Could not connecto to the MongoDB server: %v", err)
+		log.Fatalf("Could not connect to the MongoDB server: %v", err)
 	}
-
 	defer m.Close()
 	log.Println("Connected to MongoDB server")
 
-	//Accessing users collection in tea database
 	UserC = &mongo{m.DB("tea").C("users")}
-	//Accessing projects collection in tea database
 	ProjC = &mongo{m.DB("tea").C("projects")}
-	//Accessing milestones collection in tea database
 	MileC = &mongo{m.DB("tea").C("milestones")}
 
-	listen, err := net.Listen("tcp", "127.0.0.1:50012")
+	// Host grpc server
+	listen, err := net.Listen("tcp", "127.0.0.1:50052")
 	if err != nil {
 		log.Fatalf("Could not listen on port: %v", err)
 	}
