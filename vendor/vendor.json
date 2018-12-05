@@ -1,0 +1,11 @@
+{
+	"comment": "",
+	"ignore": "",
+	"package": [
+		{
+			"path": "project-management-api",
+			"revision": ""
+		}
+	],
+	"rootPath": "github.com/UCSDIOWA/project-management-api"
+}
