@@ -103,7 +103,7 @@ service ProjectManagementAPI {
 }
 
 message MilestoneModel {
-    string xid = 1;
+    string milestoneid = 1;
     string title = 2;
     string description = 3;
     repeated string users =4;
@@ -124,7 +124,7 @@ message AddMilestoneResponse {
 }
 
 message EditMilestoneRequest {
-    string xid = 1;
+    string milestoneid = 1;
     string title = 2;
     string description = 3;
     repeated string users = 4;
@@ -136,7 +136,7 @@ message EditMilestoneResponse {
 }
 
 message DeleteMilestoneRequest {
-    string projectid = 1;
+    string xid = 1;
     string milestoneid = 2;                                             
 }
 

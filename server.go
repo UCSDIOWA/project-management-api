@@ -156,9 +156,9 @@ func startHTTP() error {
 }
 
 func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRequest) (*pb.AddMilestoneResponse, error) {
-	xid := bson.NewObjectId().Hex()
+	milestoneid := bson.NewObjectId().Hex()
 	milestone := &pb.MilestoneModel{
-		Xid:         xid,
+		Milestoneid: milestoneid,
 		Title:       addMileReq.Title,
 		Description: addMileReq.Description,
 		Users:       addMileReq.Users,
@@ -177,7 +177,7 @@ func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRe
 	}
 
 	//Update project
-	milestones.Milestones = append(milestones.Milestones, xid)
+	milestones.Milestones = append(milestones.Milestones, milestoneid)
 	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones}}
 	err = ProjC.Operation.Update(find, update)
 	if err != nil {
@@ -189,7 +189,7 @@ func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRe
 
 func (s *server) EditMilestone(ctx context.Context, edMileReq *pb.EditMilestoneRequest) (*pb.EditMilestoneResponse, error) {
 	//Find milestone
-	find := bson.M{"xid": edMileReq.Xid}
+	find := bson.M{"milestoneid": edMileReq.Milestoneid}
 	beforeChange := &weightM{}
 	err := MileC.Operation.Find(find).One(beforeChange)
 	if err != nil {
@@ -198,7 +198,7 @@ func (s *server) EditMilestone(ctx context.Context, edMileReq *pb.EditMilestoneR
 
 	//Update Milestone
 	milestone := &pb.MilestoneModel{
-		Xid:         edMileReq.Xid,
+		Milestoneid: edMileReq.Milestoneid,
 		Title:       edMileReq.Title,
 		Description: edMileReq.Description,
 		Users:       edMileReq.Users,
@@ -214,6 +214,36 @@ func (s *server) EditMilestone(ctx context.Context, edMileReq *pb.EditMilestoneR
 	return &pb.EditMilestoneResponse{Success: true}, nil
 }
 
+func (s *server) DeleteMilestone(ctx context.Context, delMileReq *pb.DeleteMilestoneRequest) (*pb.DeleteMilestoneResponse, error) {
+	//Get Project milestones
+	milestones := &projectM{}
+	find := bson.M{"xid": delMileReq.Xid}
+	err := ProjC.Operation.Find(find).One(milestones)
+	if err != nil {
+		return &pb.DeleteMilestoneResponse{Success: false}, nil
+	}
+	//Find Milestone and delete
+	for i, cur := range milestones.Milestones {
+		if strings.Compare(cur, delMileReq.Milestoneid) == 0 {
+			milestones.Milestones = append(milestones.Milestones[:i], milestones.Milestones[i+1:]...)
+		}
+	}
+	//Update database
+	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones}}
+	err = ProjC.Operation.Update(find, update)
+	if err != nil {
+		return &pb.DeleteMilestoneResponse{Success: false}, nil
+	}
+
+	err = MileC.Operation.Remove(bson.M{"milestoneid": delMileReq.Milestoneid})
+	if err != nil {
+		return &pb.DeleteMilestoneResponse{Success: false}, nil
+	}
+
+	//Otherwise everything is good
+	return &pb.DeleteMilestoneResponse{Success: true}, nil
+}
+
 func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.MilestoneCompletionRequest) (*pb.MilestoneCompletionResponse, error) {
 	//Update milestone status
 	find := bson.M{"xid": milCompReq.Milestoneid}
@@ -224,31 +254,6 @@ func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.Milesto
 	}
 
 	return &pb.MilestoneCompletionResponse{Success: true}, nil
-}
-
-func (s *server) DeleteMilestone(ctx context.Context, delMileReq *pb.DeleteMilestoneRequest) (*pb.DeleteMilestoneResponse, error) {
-	//Get Project milestones
-	milestones := &projectM{}
-	find := bson.M{"xid": delMileReq.Projectid}
-	err := ProjC.Operation.Find(find).One(milestones)
-	if err != nil {
-		return &pb.DeleteMilestoneResponse{Success: false}, nil
-	}
-	//Find Milestone and delete
-	for i, cur := range milestones.Milestones {
-		if strings.Compare(cur, delMileReq.Milestoneid) == 0 {
-			milestones.Milestones[i] = "0"
-		}
-	}
-	//Update database
-	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones}}
-	err = ProjC.Operation.Update(find, update)
-	if err != nil {
-		return &pb.DeleteMilestoneResponse{Success: false}, nil
-	}
-
-	//Otherwise everything is good
-	return &pb.DeleteMilestoneResponse{Success: true}, nil
 }
 
 func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.AddUserResponse, error) {
