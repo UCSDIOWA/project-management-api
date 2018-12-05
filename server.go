@@ -183,54 +183,13 @@ func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRe
 	if err != nil {
 		return &pb.AddMilestoneResponse{Success: false}, nil
 	}
-	//Update progress bar
-	err = updateProgressBar(addMileReq.Xid)
-	if err != nil {
-		return &pb.AddMilestoneResponse{Success: false}, nil
-	}
 	//Otherwise everything is good
 	return &pb.AddMilestoneResponse{Success: true}, nil
 }
 
-func updateProgressBar(projectid string) error {
-	milestones := &projectM{}
-	find := bson.M{"xid": projectid}
-	err := ProjC.Operation.Find(find).One(milestones)
-	if err != nil {
-		return err
-	}
-	var finishedWeight int32
-	var totalWeight int32
-	finishedWeight = 0
-	totalWeight = 0
-	currentMile := &weightM{}
-	for _, cur := range milestones.Milestones {
-		if strings.Compare(cur, "0") != 0 {
-			findMile := bson.M{"xid": cur}
-			err := MileC.Operation.Find(findMile).One(currentMile)
-			if err != nil {
-				return err
-			}
-			totalWeight += currentMile.Weight
-			if currentMile.Done {
-				finishedWeight += currentMile.Weight
-			}
-		}
-	}
-
-	update := bson.M{"$set": bson.M{"milestones": milestones.Milestones,
-		"progressbar": finishedWeight * 100 / totalWeight}}
-	err = ProjC.Operation.Update(find, update)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (s *server) EditMilestone(ctx context.Context, edMileReq *pb.EditMilestoneRequest) (*pb.EditMilestoneResponse, error) {
 	//Find milestone
-	find := bson.M{"xid": edMileReq.Milestoneid}
+	find := bson.M{"xid": edMileReq.Xid}
 	beforeChange := &weightM{}
 	err := MileC.Operation.Find(find).One(beforeChange)
 	if err != nil {
@@ -239,7 +198,7 @@ func (s *server) EditMilestone(ctx context.Context, edMileReq *pb.EditMilestoneR
 
 	//Update Milestone
 	milestone := &pb.MilestoneModel{
-		Xid:         edMileReq.Milestoneid,
+		Xid:         edMileReq.Xid,
 		Title:       edMileReq.Title,
 		Description: edMileReq.Description,
 		Users:       edMileReq.Users,
@@ -251,13 +210,6 @@ func (s *server) EditMilestone(ctx context.Context, edMileReq *pb.EditMilestoneR
 		return &pb.EditMilestoneResponse{Success: false}, nil
 	}
 
-	//Update progress bar if weight changed
-	if beforeChange.Weight != edMileReq.Weight {
-		err := updateProgressBar(edMileReq.Projectid)
-		if err != nil {
-			return &pb.EditMilestoneResponse{Success: false}, nil
-		}
-	}
 	//Otherwise update successful
 	return &pb.EditMilestoneResponse{Success: true}, nil
 }
@@ -270,11 +222,7 @@ func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.Milesto
 	if err != nil {
 		return &pb.MilestoneCompletionResponse{Success: false}, nil
 	}
-	//Update progress bar
-	err = updateProgressBar(milCompReq.Projectid)
-	if err != nil {
-		return &pb.MilestoneCompletionResponse{Success: false}, nil
-	}
+
 	return &pb.MilestoneCompletionResponse{Success: true}, nil
 }
 
@@ -299,11 +247,6 @@ func (s *server) DeleteMilestone(ctx context.Context, delMileReq *pb.DeleteMiles
 		return &pb.DeleteMilestoneResponse{Success: false}, nil
 	}
 
-	//Update Progressbar
-	err = updateProgressBar(delMileReq.Projectid)
-	if err != nil {
-		return &pb.DeleteMilestoneResponse{Success: false}, nil
-	}
 	//Otherwise everything is good
 	return &pb.DeleteMilestoneResponse{Success: true}, nil
 }

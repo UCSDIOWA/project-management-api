@@ -124,12 +124,11 @@ message AddMilestoneResponse {
 }
 
 message EditMilestoneRequest {
-    string milestoneid = 1;
-    string projectid = 2;
-    string title = 3;
-    string description = 4;
-    repeated string users = 5;
-    int32 weight = 6;
+    string xid = 1;
+    string title = 2;
+    string description = 3;
+    repeated string users = 4;
+    int32 weight = 5;
 }
 
 message EditMilestoneResponse {
