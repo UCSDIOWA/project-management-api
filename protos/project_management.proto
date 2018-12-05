@@ -112,7 +112,7 @@ message MilestoneModel {
 }
 
 message AddMilestoneRequest {
-    string projectid = 1;
+    string xid = 1;
     string title = 2;
     string description = 3;
     repeated string users = 4;

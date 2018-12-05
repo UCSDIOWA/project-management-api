@@ -169,7 +169,7 @@ func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRe
 	}
 	//Add to project milestones
 	milestones := &projectM{}
-	find := bson.M{"xid": addMileReq.Projectid}
+	find := bson.M{"xid": addMileReq.Xid}
 
 	err = ProjC.Operation.Find(find).One(milestones)
 	if err != nil {
@@ -184,7 +184,7 @@ func (s *server) AddMilestone(ctx context.Context, addMileReq *pb.AddMilestoneRe
 		return &pb.AddMilestoneResponse{Success: false}, nil
 	}
 	//Update progress bar
-	err = updateProgressBar(addMileReq.Projectid)
+	err = updateProgressBar(addMileReq.Xid)
 	if err != nil {
 		return &pb.AddMilestoneResponse{Success: false}, nil
 	}
