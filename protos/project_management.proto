@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package projectManagement;
-
 import "google/api/annotations.proto";
 
 service ProjectManagementAPI {

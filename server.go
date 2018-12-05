@@ -9,10 +9,6 @@ import (
 	"os"
 	"strings"
 
-	//    "flag"
-	//    "os"
-	//    "net/http"
-
 	pb "github.com/UCSDIOWA/project-management-api/protos"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
@@ -20,7 +16,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/rs/cors"
 
-	//    "github.com/golang/glog"
 	"google.golang.org/grpc"
 )
 
@@ -28,15 +23,15 @@ type server struct{}
 
 //Struct to handle user collection
 type user struct {
-	Invitations    []string `json:"invitations" bson:"invitations"`
-	ProjectInvites []string `json:"projectinvites" bson:"projectinvites"`
-	Notifications []string `json:"notifications" bson:"notifications"`
+	Invitations     []string `json:"invitations" bson:"invitations"`
+	ProjectInvites  []string `json:"projectinvites" bson:"projectinvites"`
+	Notifications   []string `json:"notifications" bson:"notifications"`
 	CurrentProjects []string `json:"currentprojects" bson:"currentprojects"`
 }
 
 //Struct to handle users in projects
 type projectU struct {
-	Title string `json:"title" bson:"title"`
+	Title string   `json:"title" bson:"title"`
 	Users []string `json:"memberslist" bson:"memberslist"`
 }
 
@@ -347,7 +342,7 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 	}
 
 	//send notifications to all of the members of the group
-	for _,usr := range projectUsers.Users{
+	for _, usr := range projectUsers.Users {
 		userProjects := &user{}
 		find = bson.M{"email": usr}
 		err = UserC.Operation.Find(find).One(userProjects)
@@ -355,7 +350,7 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 			log.Println("Couldn't find user.")
 			return &pb.AddUserResponse{Success: false}, nil
 		}
-		userProjects.Notifications = append(userProjects.Notifications,  addUReq.Useremail + " has been added to the project " + projectUsers.Title)
+		userProjects.Notifications = append(userProjects.Notifications, addUReq.Useremail+" has been added to the project "+projectUsers.Title)
 		err = UserC.Operation.Update(bson.M{"email": usr}, bson.M{"notifications": userProjects.Notifications})
 		if err != nil {
 			log.Println("User update failed")
@@ -506,7 +501,7 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 	//add the new invitation and notification, and update the database
 	invites.Invitations = append(invites.Invitations, invite.Senderemail+"invited you to join "+projTitle.Title)
 	invites.ProjectInvites = append(invites.ProjectInvites, invite.Projectid)
-	invites.Notifications = append([]string{invite.Senderemail+"invited you to join "+projTitle.Title}, invites.Notifications...)
+	invites.Notifications = append([]string{invite.Senderemail + "invited you to join " + projTitle.Title}, invites.Notifications...)
 	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites})
 	if err != nil {
 		log.Println("Updating user's invitations failed")
