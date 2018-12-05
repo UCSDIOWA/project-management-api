@@ -96,7 +96,7 @@ func main() {
 
 func startGRPC() error {
 	// Host mongo server
-	m, err := mgo.Dial("127.0.0.1:27017")
+	m, err := mgo.Dial("mongodb://tea:cse110IOWA@ds159263.mlab.com:59263/tea")
 	if err != nil {
 		log.Fatalf("Could not connect to the MongoDB server: %v", err)
 	}
