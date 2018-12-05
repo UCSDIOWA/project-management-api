@@ -246,7 +246,7 @@ func (s *server) DeleteMilestone(ctx context.Context, delMileReq *pb.DeleteMiles
 
 func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.MilestoneCompletionRequest) (*pb.MilestoneCompletionResponse, error) {
 	//Update milestone status
-	find := bson.M{"xid": milCompReq.Milestoneid}
+	find := bson.M{"milestoneid": milCompReq.Milestoneid}
 	update := bson.M{"$set": bson.M{"done": true}}
 	err := MileC.Operation.Update(find, update)
 	if err != nil {

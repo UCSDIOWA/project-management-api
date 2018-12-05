@@ -145,7 +145,6 @@ message DeleteMilestoneResponse {
 }
 
 message MilestoneCompletionRequest {
-    string projectid = 1;
     string milestoneid = 2;
 }
 
