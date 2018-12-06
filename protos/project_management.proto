@@ -31,6 +31,13 @@ service ProjectManagementAPI {
         };
     }
 
+    rpc GetAllMilestones (GetAllMilestonesRequest) returns (GetAllMilestonesResponse) {
+        option (google.api.http) = {
+            post: "/getallmilestones"
+            body: "*"
+        };
+    }
+
     rpc AddUser (AddUserRequest) returns (AddUserResponse) {
         option (google.api.http) = {
             post: "/adduser"
@@ -150,6 +157,15 @@ message MilestoneCompletionRequest {
 
 message MilestoneCompletionResponse {
     bool success = 1;
+}
+
+message GetAllMilestonesRequest {
+    repeated string milestoneid = 1;
+}
+
+message GetAllMilestonesResponse {
+    bool success = 1;
+    repeated MilestoneModel milestones = 2;
 }
 
 message GetProjectMembersRequest {

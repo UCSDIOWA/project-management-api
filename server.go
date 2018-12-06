@@ -62,6 +62,15 @@ type weightM struct {
 	Done   bool  `json:"done" bson:"done"`
 }
 
+type getAllMilestones struct {
+	Milestoneid string   `json:"milestoneid" bson:"milestoneid"`
+	Title       string   `json:"title" bson:"title"`
+	Description string   `json:"description" bson:"description"`
+	Users       []string `json:"users" bson:"users"`
+	Weight      int32    `json:"weight" bson:"weight"`
+	Done        bool     `json:"done" bson:"done"`
+}
+
 type mongo struct {
 	Operation *mgo.Collection
 }
@@ -96,7 +105,7 @@ func main() {
 
 func startGRPC() error {
 	// Host mongo server
-	m, err := mgo.Dial("localhost:27017")
+	m, err := mgo.Dial("mongodb://tea:cse110IOWA@ds159263.mlab.com:59263/tea")
 	if err != nil {
 		log.Fatalf("Could not connect to the MongoDB server: %v", err)
 	}
@@ -254,6 +263,34 @@ func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.Milesto
 	}
 
 	return &pb.MilestoneCompletionResponse{Success: true}, nil
+}
+
+func (s *server) GetAllMilestones(ctx context.Context, request *pb.GetAllMilestonesRequest) (*pb.GetAllMilestonesResponse, error) {
+	var allMilestones []getAllMilestones
+	var response pb.GetAllMilestonesResponse
+
+	iter := MileC.Operation.Find(nil).Iter()
+	err := iter.All(&allMilestones)
+	if err != nil {
+		return &pb.GetAllMilestonesResponse{Success: false}, nil
+	}
+
+	for i := 0; i < len(allMilestones); i++ {
+		for j := 0; j < len(request.Milestoneid); j++ {
+			if allMilestones[i].Milestoneid == request.Milestoneid[j] {
+				var milestone pb.MilestoneModel
+				milestone.Milestoneid = allMilestones[i].Milestoneid
+				milestone.Description = allMilestones[i].Description
+				milestone.Done = allMilestones[i].Done
+				milestone.Title = allMilestones[i].Title
+				milestone.Users = allMilestones[i].Users
+				milestone.Weight = allMilestones[i].Weight
+				response.Milestones = append(response.Milestones, &milestone)
+			}
+		}
+	}
+
+	return &response, nil
 }
 
 func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.AddUserResponse, error) {
