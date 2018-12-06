@@ -407,7 +407,7 @@ func (s *server) GetProjectMembers(ctx context.Context, currMembs *pb.GetProject
 
 	//for each email, find the user of that email and get it's first name and email
 	users := []*pb.UserTuple{}
-	for _, currEmail := range currMembs.CurrentMembers {
+	for _, currEmail := range currMembs.Memberslist {
 		//get this user's email and first name
 		userInfo := &pb.UserTuple{}
 		findID := bson.M{"email": currEmail}
@@ -432,8 +432,8 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 
 	//get user's invitations
 	invites := user{}
-	findID := bson.M{"email": invite.Receipientemail}
-	err := UserC.Operation.Find(findID).One(invites)
+	findID := bson.M{"email": invite.Recipientemail}
+	err := UserC.Operation.Find(findID).One(&invites)
 	if err != nil {
 		log.Println("Finding user based on given email failed")
 		return &pb.InviteUserResponse{Success: false}, nil
@@ -441,18 +441,18 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 
 	//get the project based on the project id
 	projTitle := projectT{}
-	find := bson.M{"xid": invite.Projectid}
-	err = ProjC.Operation.Find(find).One(projTitle)
+	find := bson.M{"xid": invite.Xid}
+	err = ProjC.Operation.Find(find).One(&projTitle)
 	if err != nil {
 		log.Println("Finding project based on given xid failed")
 		return &pb.InviteUserResponse{Success: false}, nil
 	}
 
 	//add the new invitation and notification, and update the database
-	invites.Invitations = append(invites.Invitations, invite.Senderemail+"invited you to join "+projTitle.Title)
-	invites.ProjectInvites = append(invites.ProjectInvites, invite.Projectid)
-	invites.Notifications = append([]string{invite.Senderemail + "invited you to join " + projTitle.Title}, invites.Notifications...)
-	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites})
+	invites.Invitations = append(invites.Invitations, invite.Senderemail+" invited you to join "+projTitle.Title)
+	invites.ProjectInvites = append(invites.ProjectInvites, invite.Xid)
+	invites.Notifications = append([]string{invite.Senderemail + " invited you to join " + projTitle.Title}, invites.Notifications...)
+	err = UserC.Operation.Update(findID, bson.M{"$set": bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites}})
 	if err != nil {
 		log.Println("Updating user's invitations failed")
 		return &pb.InviteUserResponse{Success: false}, nil

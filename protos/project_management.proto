@@ -153,8 +153,8 @@ message MilestoneCompletionResponse {
 }
 
 message GetProjectMembersRequest {
-    string projectid = 1;
-    repeated string currentMembers = 2;
+    string xid = 1;
+    repeated string memberslist = 2;
 }
 
 message GetProjectMembersResponse {
@@ -168,8 +168,8 @@ message UserTuple {
 }
 
 message InviteUserRequest {
-    string projectid = 1;
-    string receipientemail = 2;
+    string xid = 1;
+    string recipientemail = 2;
     string senderemail = 3;
 }
 
