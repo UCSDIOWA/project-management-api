@@ -597,8 +597,8 @@ func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementReques
 func (s *server) TransferLeader(ctx context.Context, tlReq *pb.TransferLeaderRequest) (*pb.TransferLeaderResponse, error) {
 
 	//update the leadership
-	findID := bson.M{"xid:": tlReq.Projectid}
-	err := ProjC.Operation.Update(findID, bson.M{"projectleader": tlReq.Newleader})
+	findID := bson.M{"xid": tlReq.Xid}
+	err := ProjC.Operation.Update(findID, bson.M{"$set": bson.M{"projectleader": tlReq.Newleader}})
 	if err != nil {
 		log.Println("Finding project based on given xid failed")
 		return &pb.TransferLeaderResponse{Success: false}, nil

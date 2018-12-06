@@ -223,7 +223,7 @@ message RejectUserResponse {
 }
 
 message TransferLeaderRequest {
-    string projectid = 1;
+    string xid = 1;
     string newleader = 2;
 }
 
