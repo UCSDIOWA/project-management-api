@@ -198,8 +198,8 @@ message RejectInviteResponse {
 }
 
 message AddUserRequest {
-    string projectid = 1;
-    string useremail = 2;
+    string xid = 1;
+    string email = 2;
 }
 
 message AddUserResponse {
@@ -207,8 +207,8 @@ message AddUserResponse {
 }
 
 message RemoveUserRequest {
-    string projectid = 1;
-    string useremail = 2;
+    string xid = 1;
+    string email = 2;
 }
 
 message RemoveUserResponse {

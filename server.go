@@ -259,7 +259,7 @@ func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.Milesto
 func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.AddUserResponse, error) {
 	//Fetch User
 	userProjects := &user{}
-	find := bson.M{"email": addUReq.Useremail}
+	find := bson.M{"email": addUReq.Email}
 
 	err := UserC.Operation.Find(find).One(userProjects)
 	if err != nil {
@@ -269,7 +269,7 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 
 	//Fetch project
 	projectUsers := &projectU{}
-	findId := bson.M{"xid": addUReq.Projectid}
+	findId := bson.M{"xid": addUReq.Xid}
 	err = ProjC.Operation.Find(findId).One(projectUsers)
 	if err != nil {
 		log.Println("Couldn't find project.")
@@ -277,7 +277,7 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 	}
 
 	//Add project to user and update current projects and notifications
-	userProjects.CurrentProjects = append(userProjects.CurrentProjects, addUReq.Projectid)
+	userProjects.CurrentProjects = append(userProjects.CurrentProjects, addUReq.Xid)
 	userProjects.Notifications = append([]string{"You've been added to the project " + projectUsers.Title}, userProjects.Notifications...)
 	update := bson.M{"$set": bson.M{"currentprojects": userProjects.CurrentProjects, "notifications": userProjects.Notifications}}
 	err = UserC.Operation.Update(find, update)
@@ -288,23 +288,25 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 
 	//send notifications to all of the members of the group
 	for _, usr := range projectUsers.Users {
-		userProjects := &user{}
-		find = bson.M{"email": usr}
-		err = UserC.Operation.Find(find).One(userProjects)
-		if err != nil {
-			log.Println("Couldn't find user.")
-			return &pb.AddUserResponse{Success: false}, nil
-		}
-		userProjects.Notifications = append(userProjects.Notifications, addUReq.Useremail+" has been added to the project "+projectUsers.Title)
-		err = UserC.Operation.Update(bson.M{"email": usr}, bson.M{"notifications": userProjects.Notifications})
-		if err != nil {
-			log.Println("User update failed")
-			return &pb.AddUserResponse{Success: false}, nil
+		if usr != addUReq.Email {
+			userProjects := &user{}
+			find = bson.M{"email": usr}
+			err = UserC.Operation.Find(find).One(userProjects)
+			if err != nil {
+				log.Println("Couldn't find user.")
+				return &pb.AddUserResponse{Success: false}, nil
+			}
+			userProjects.Notifications = append(userProjects.Notifications, addUReq.Email+" has been added to the project "+projectUsers.Title)
+			err = UserC.Operation.Update(bson.M{"email": usr}, bson.M{"$set": bson.M{"notifications": userProjects.Notifications}})
+			if err != nil {
+				log.Println("User update failed")
+				return &pb.AddUserResponse{Success: false}, nil
+			}
 		}
 	}
 
 	//Add user to project and update
-	projectUsers.Users = append(projectUsers.Users, addUReq.Useremail)
+	projectUsers.Users = append(projectUsers.Users, addUReq.Email)
 	update = bson.M{"$set": bson.M{"memberslist": projectUsers.Users}}
 	err = ProjC.Operation.Update(findId, update)
 	if err != nil {
@@ -319,7 +321,7 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) (*pb.RemoveUserResponse, error) {
 	//Fetch User
 	userProjects := &user{}
-	find := bson.M{"email": remUReq.Useremail}
+	find := bson.M{"email": remUReq.Email}
 	err := UserC.Operation.Find(find).One(userProjects)
 	if err != nil {
 		log.Println("Couldn't find user.")
@@ -328,7 +330,7 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 
 	//Find index of project id in user, remove the user
 	for i, num := range userProjects.CurrentProjects {
-		if strings.Compare(num, remUReq.Projectid) == 0 {
+		if strings.Compare(num, remUReq.Xid) == 0 {
 			userProjects.CurrentProjects[i] = userProjects.CurrentProjects[len(userProjects.CurrentProjects)-1]
 			userProjects.CurrentProjects = userProjects.CurrentProjects[:len(userProjects.CurrentProjects)-1]
 		}
@@ -343,7 +345,7 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 
 	//Fetch project
 	projectUsers := &projectU{}
-	findId := bson.M{"xid": remUReq.Projectid}
+	findId := bson.M{"xid": remUReq.Xid}
 	err = ProjC.Operation.Find(findId).One(projectUsers)
 	if err != nil {
 		log.Println("Couldn't find project.")
@@ -352,7 +354,7 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 
 	//Find index of user id in project
 	for i, num := range projectUsers.Users {
-		if strings.Compare(num, remUReq.Useremail) == 0 {
+		if strings.Compare(num, remUReq.Email) == 0 {
 			projectUsers.Users[i] = projectUsers.Users[len(projectUsers.Users)]
 		}
 	}
@@ -492,7 +494,7 @@ func (s *server) RejectInvitation(ctx context.Context, invite *pb.RejectInviteRe
 
 	//update the database
 	update := bson.M{"$set": bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites}}
-	err = UserC.Operation.Update(findID,update)
+	err = UserC.Operation.Update(findID, update)
 	if err != nil {
 		log.Println("Updating user's invitations failed")
 		return &pb.RejectInviteResponse{Success: false}, nil
@@ -546,7 +548,7 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 		}
 	}
 	//Add Project to user
-	invites.CurrentProjects = append( invites.CurrentProjects, invite.Projectid)
+	invites.CurrentProjects = append(invites.CurrentProjects, invite.Projectid)
 
 	//update the database
 	update = bson.M{"$set": bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites, "currentprojects": invites.CurrentProjects}}
