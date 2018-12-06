@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -325,7 +324,6 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 	find := bson.M{"email": remUReq.Email}
 	err := UserC.Operation.Find(find).One(userProjects)
 	if err != nil {
-		log.Println("Couldn't find user.")
 		return &pb.RemoveUserResponse{Success: false}, nil
 	}
 
@@ -334,7 +332,6 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 	findId := bson.M{"xid": remUReq.Xid}
 	err = ProjC.Operation.Find(findId).One(projectUsers)
 	if err != nil {
-		log.Println("Couldn't find project.")
 		return &pb.RemoveUserResponse{Success: false}, nil
 	}
 
@@ -343,7 +340,6 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 	for i, num := range userProjects.CurrentProjects {
 		if strings.Compare(num, remUReq.Xid) == 0 {
 			if i < size {
-				fmt.Println(size)
 				userProjects.CurrentProjects = append(userProjects.CurrentProjects[:i], userProjects.CurrentProjects[i+1:]...)
 			}
 		}
@@ -380,7 +376,7 @@ func (s *server) RejectUser(ctx context.Context, rejUsrReq *pb.RejectUserRequest
 
 	//Fetch project
 	pendingUsers := &userJoinReqs{}
-	findId := bson.M{"xid": rejUsrReq.Projectid}
+	findId := bson.M{"xid": rejUsrReq.Xid}
 
 	err := ProjC.Operation.Find(findId).One(pendingUsers)
 	if err != nil {
@@ -390,7 +386,7 @@ func (s *server) RejectUser(ctx context.Context, rejUsrReq *pb.RejectUserRequest
 
 	//Remove user from pending users in project and update
 	for i, usr := range pendingUsers.JoinRequests {
-		if usr == rejUsrReq.Useremail {
+		if usr == rejUsrReq.Email {
 			pendingUsers.JoinRequests[i] = pendingUsers.JoinRequests[len(pendingUsers.JoinRequests)-1]
 			pendingUsers.JoinRequests = pendingUsers.JoinRequests[:len(pendingUsers.JoinRequests)-1]
 			break

@@ -216,8 +216,8 @@ message RemoveUserResponse {
 }
 
 message RejectUserRequest {
-    string projectid = 1;
-    string useremail = 2;
+    string xid = 1;
+    string email = 2;
 }
 
 message RejectUserResponse {
