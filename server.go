@@ -96,7 +96,7 @@ func main() {
 
 func startGRPC() error {
 	// Host mongo server
-	m, err := mgo.Dial("mongodb://tea:cse110IOWA@ds159263.mlab.com:59263/tea")
+	m, err := mgo.Dial("localhost:27017")
 	if err != nil {
 		log.Fatalf("Could not connect to the MongoDB server: %v", err)
 	}
@@ -461,7 +461,7 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 func (s *server) RejectInvitation(ctx context.Context, invite *pb.RejectInviteRequest) (*pb.RejectInviteResponse, error) {
 
 	//get user's invitations
-	invites := user{}
+	invites := &user{}
 	findID := bson.M{"email": invite.Email}
 	err := UserC.Operation.Find(findID).One(invites)
 	if err != nil {
@@ -469,18 +469,30 @@ func (s *server) RejectInvitation(ctx context.Context, invite *pb.RejectInviteRe
 		return &pb.RejectInviteResponse{Success: false}, nil
 	}
 
-	//add the new invitation
-	for i, currInvite := range invites.Invitations {
-		//check if the email and the title are in this invitation, and remove it once found
-		if currInvite == invites.Invitations[i] {
-			invites.Invitations[i] = invites.Invitations[len(invites.Invitations)-1]
+	//For testing if project invite exists
+	check := false
+	//Remove invitations
+	for i, currInvite := range invites.ProjectInvites {
+		//Find project id in list found
+		if currInvite == invite.Projectid {
+			//Remove invite message
+			copy(invites.Invitations[i:], invites.Invitations[i+1:])
 			invites.Invitations = invites.Invitations[:len(invites.Invitations)-1]
+			//Remove project invite
+			copy(invites.ProjectInvites[i:], invites.ProjectInvites[i+1:])
+			invites.ProjectInvites = invites.ProjectInvites[:len(invites.ProjectInvites)-1]
+			check = true
 			break
 		}
 	}
 
+	if !check {
+		return &pb.RejectInviteResponse{Success: false}, nil
+	}
+
 	//update the database
-	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations})
+	update := bson.M{"$set": bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites}}
+	err = UserC.Operation.Update(findID,update)
 	if err != nil {
 		log.Println("Updating user's invitations failed")
 		return &pb.RejectInviteResponse{Success: false}, nil
@@ -502,7 +514,16 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 		return &pb.AcceptInviteResponse{Success: false}, nil
 	}
 
-	//Add project to user and update
+	//Fetch user's invites
+	invites := &user{}
+	findID := bson.M{"email": invite.Email}
+	err = UserC.Operation.Find(findID).One(invites)
+	if err != nil {
+		log.Println("Finding user based on given email failed")
+		return &pb.AcceptInviteResponse{Success: false}, nil
+	}
+
+	//Add user to project and update
 	projectUsers.Users = append(projectUsers.Users, invite.Email)
 	update := bson.M{"$set": bson.M{"memberslist": projectUsers.Users}}
 	err = ProjC.Operation.Update(find, update)
@@ -511,27 +532,25 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 		return &pb.AcceptInviteResponse{Success: false}, nil
 	}
 
-	//get user's invitations
-	invites := user{}
-	findID := bson.M{"email": invite.Email}
-	err = UserC.Operation.Find(findID).One(invites)
-	if err != nil {
-		log.Println("Finding user based on given email failed")
-		return &pb.AcceptInviteResponse{Success: false}, nil
-	}
-
-	//add the new invitation
-	for i, currInvite := range invites.Invitations {
-		//check if the email and the title are in this invitation, and remove it once found
-		if currInvite == invites.Invitations[i] {
-			invites.Invitations[i] = invites.Invitations[len(invites.Invitations)-1]
+	//Remove invitations
+	for i, currInvite := range invites.ProjectInvites {
+		//Find project id in list found
+		if currInvite == invite.Projectid {
+			//Remove invite message
+			copy(invites.Invitations[i:], invites.Invitations[i+1:])
 			invites.Invitations = invites.Invitations[:len(invites.Invitations)-1]
+			//Remove project invite
+			copy(invites.ProjectInvites[i:], invites.ProjectInvites[i+1:])
+			invites.ProjectInvites = invites.ProjectInvites[:len(invites.ProjectInvites)-1]
 			break
 		}
 	}
+	//Add Project to user
+	invites.CurrentProjects = append( invites.CurrentProjects, invite.Projectid)
 
 	//update the database
-	err = UserC.Operation.Update(findID, bson.M{"invitations": invites.Invitations})
+	update = bson.M{"$set": bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites, "currentprojects": invites.CurrentProjects}}
+	err = UserC.Operation.Update(findID, update)
 	if err != nil {
 		log.Println("Updating user's invitations failed")
 		return &pb.AcceptInviteResponse{Success: false}, nil
