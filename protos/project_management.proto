@@ -232,7 +232,7 @@ message TransferLeaderResponse {
 }
 
 message AnnouncementRequest {
-    string projectid = 1;
+    string xid = 1;
     string poster = 2;
     string message = 3;
     bool pin = 4;

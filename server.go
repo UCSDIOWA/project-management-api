@@ -570,7 +570,7 @@ func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementReques
 
 	//retrieve project
 	oldAnnouncements := &projectA{}
-	find := bson.M{"xid": annReq.Projectid}
+	find := bson.M{"xid": annReq.Xid}
 	err := ProjC.Operation.Find(find).One(oldAnnouncements)
 	if err != nil {
 		log.Println("Finding project based on given xid failed")
@@ -578,14 +578,14 @@ func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementReques
 	}
 	//determine whether to add the post to the top or the bottom of the announcements
 	if annReq.Pin {
-		oldAnnouncements.PinnedAnnouncements = append([]string{annReq.Poster + "says " + annReq.Message}, oldAnnouncements.PinnedAnnouncements...)
+		oldAnnouncements.PinnedAnnouncements = append([]string{annReq.Poster + " says " + annReq.Message}, oldAnnouncements.PinnedAnnouncements...)
 	} else {
-		oldAnnouncements.UnpinnedAnnouncements = append([]string{annReq.Poster + "says " + annReq.Message}, oldAnnouncements.UnpinnedAnnouncements...)
+		oldAnnouncements.UnpinnedAnnouncements = append([]string{annReq.Poster + " says " + annReq.Message}, oldAnnouncements.UnpinnedAnnouncements...)
 	}
 
 	//update the database
-	err = ProjC.Operation.Update(find, bson.M{"pinnedannouncements": oldAnnouncements.PinnedAnnouncements,
-		"unpinnedannouncements": oldAnnouncements.UnpinnedAnnouncements})
+	err = ProjC.Operation.Update(find, bson.M{"$set": bson.M{"pinnedannouncements": oldAnnouncements.PinnedAnnouncements,
+		"unpinnedannouncements": oldAnnouncements.UnpinnedAnnouncements}})
 	if err != nil {
 		log.Println("Updating projects invitations failed")
 		return &pb.AnnouncementResponse{Success: false}, nil
