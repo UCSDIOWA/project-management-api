@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -328,11 +329,23 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 		return &pb.RemoveUserResponse{Success: false}, nil
 	}
 
+	//Fetch project
+	projectUsers := &projectU{}
+	findId := bson.M{"xid": remUReq.Xid}
+	err = ProjC.Operation.Find(findId).One(projectUsers)
+	if err != nil {
+		log.Println("Couldn't find project.")
+		return &pb.RemoveUserResponse{Success: false}, nil
+	}
+
+	size := len(userProjects.CurrentProjects)
 	//Find index of project id in user, remove the user
 	for i, num := range userProjects.CurrentProjects {
 		if strings.Compare(num, remUReq.Xid) == 0 {
-			userProjects.CurrentProjects[i] = userProjects.CurrentProjects[len(userProjects.CurrentProjects)-1]
-			userProjects.CurrentProjects = userProjects.CurrentProjects[:len(userProjects.CurrentProjects)-1]
+			if i < size {
+				fmt.Println(size)
+				userProjects.CurrentProjects = append(userProjects.CurrentProjects[:i], userProjects.CurrentProjects[i+1:]...)
+			}
 		}
 	}
 
@@ -343,19 +356,13 @@ func (s *server) RemoveUser(ctx context.Context, remUReq *pb.RemoveUserRequest) 
 		return &pb.RemoveUserResponse{Success: false}, nil
 	}
 
-	//Fetch project
-	projectUsers := &projectU{}
-	findId := bson.M{"xid": remUReq.Xid}
-	err = ProjC.Operation.Find(findId).One(projectUsers)
-	if err != nil {
-		log.Println("Couldn't find project.")
-		return &pb.RemoveUserResponse{Success: false}, nil
-	}
-
 	//Find index of user id in project
 	for i, num := range projectUsers.Users {
 		if strings.Compare(num, remUReq.Email) == 0 {
-			projectUsers.Users[i] = projectUsers.Users[len(projectUsers.Users)]
+			//Copy last element to index i
+			projectUsers.Users[i] = projectUsers.Users[len(projectUsers.Users)-1]
+			//Truncate slice
+			projectUsers.Users = projectUsers.Users[:len(projectUsers.Users)-1]
 		}
 	}
 	//Update project
