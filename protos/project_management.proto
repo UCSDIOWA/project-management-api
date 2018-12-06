@@ -188,8 +188,7 @@ message AcceptInviteResponse {
 
 message RejectInviteRequest {
     string email = 1;
-    string invite = 2;
-    string projectid = 3;
+    string xid = 2;
 }
 
 message RejectInviteResponse {

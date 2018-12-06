@@ -479,7 +479,7 @@ func (s *server) RejectInvitation(ctx context.Context, invite *pb.RejectInviteRe
 	//Remove invitations
 	for i, currInvite := range invites.ProjectInvites {
 		//Find project id in list found
-		if currInvite == invite.Projectid {
+		if currInvite == invite.Xid {
 			//Remove invite message
 			copy(invites.Invitations[i:], invites.Invitations[i+1:])
 			invites.Invitations = invites.Invitations[:len(invites.Invitations)-1]
