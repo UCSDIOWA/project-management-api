@@ -512,7 +512,7 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 
 	//Fetch project
 	projectUsers := &projectU{}
-	find := bson.M{"xid": invite.Projectid}
+	find := bson.M{"xid": invite.Xid}
 	err := ProjC.Operation.Find(find).One(projectUsers)
 	if err != nil {
 		log.Println("Couldn't find project.")
@@ -540,7 +540,7 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 	//Remove invitations
 	for i, currInvite := range invites.ProjectInvites {
 		//Find project id in list found
-		if currInvite == invite.Projectid {
+		if currInvite == invite.Xid {
 			//Remove invite message
 			copy(invites.Invitations[i:], invites.Invitations[i+1:])
 			invites.Invitations = invites.Invitations[:len(invites.Invitations)-1]
@@ -551,7 +551,7 @@ func (s *server) AcceptInvitation(ctx context.Context, invite *pb.AcceptInviteRe
 		}
 	}
 	//Add Project to user
-	invites.CurrentProjects = append(invites.CurrentProjects, invite.Projectid)
+	invites.CurrentProjects = append(invites.CurrentProjects, invite.Xid)
 
 	//update the database
 	update = bson.M{"$set": bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites, "currentprojects": invites.CurrentProjects}}
