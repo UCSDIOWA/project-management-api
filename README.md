@@ -17,6 +17,8 @@ message AddMilestoneResponse {
     bool success = 1;
 }
 
+
+
 Endpoint: /editmilestone
 
 Handles editing the details of a pre-existing milestone that is a part of the project.
@@ -33,6 +35,8 @@ message EditMilestoneResponse {
     bool success = 1;
 }
 
+
+
 Endpoint: /deletemilestone
 
 Handles removing a milestone from the project.
@@ -46,6 +50,8 @@ message DeleteMilestoneResponse {
     bool success = 1;
 }
 
+
+
 Endpoint: /milestonecompletion
 
 Handles toggling the milestone as complete or incomplete.
@@ -57,6 +63,8 @@ message MilestoneCompletionRequest {
 message MilestoneCompletionResponse {
     bool success = 1;
 }
+
+
 
 Endpoint: /getallmilestones
 
@@ -80,6 +88,8 @@ message MilestoneModel {
     bool done = 6;
 }
 
+
+
 Endpoint: /getprojectmembers
 
 Helper function for the Front-End to retrieve certain user information for the users who are a part of the project. The array of UserTuples that is returned is described below as well.
@@ -99,6 +109,8 @@ message UserTuple {
     string firstname = 2;
 }
 
+
+
 Endpoint: /inviteuser
 
 Handles the case when someone who is a part of the project invites a user who is not a part of the project to join the project.
@@ -113,6 +125,8 @@ message InviteUserResponse {
     bool success = 1;
 }
 
+
+
 Endpoint: /acceptinvitation
 
 Handles the case when a user accepts an invitation to join a project. The invitation is removed from their invitations list.
@@ -125,6 +139,8 @@ message AcceptInviteRequest {
 message AcceptInviteResponse {
     bool success = 1;
 }
+
+
 
 Endpoint: /rejectinvitation
 
@@ -139,6 +155,8 @@ message RejectInviteResponse {
     bool success = 1;
 }
 
+
+
 Endpoint: /adduser
 
 Adds a user who has requested to join the project to the project. The user's request is removed from the requests array and their email is added to the members list array.
@@ -151,6 +169,8 @@ message AddUserRequest {
 message AddUserResponse {
     bool success = 1;
 }
+
+
 
 Endpoint: /removeuser
 
@@ -165,6 +185,8 @@ message RemoveUserResponse {
     bool success = 1;
 }
 
+
+
 Endpoint: /rejectuser
 
 Rejects a user's request to join the project, and removes their request from the join requests array.
@@ -178,6 +200,8 @@ message RejectUserResponse {
     bool success = 1;
 }
 
+
+
 Endpoint: /transferleader
 
 Changes the leader from one person in the project to another person in the group.
@@ -190,6 +214,8 @@ message TransferLeaderRequest {
 message TransferLeaderResponse {
     bool success = 1;
 }
+
+
 
 Endpoint: /announcement
 
@@ -205,6 +231,8 @@ message AnnouncementRequest {
 message AnnouncementResponse {
     bool success = 1;
 }
+
+
 
 Endpoint: /removenotification
 
