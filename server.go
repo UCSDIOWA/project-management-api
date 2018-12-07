@@ -254,10 +254,21 @@ func (s *server) DeleteMilestone(ctx context.Context, delMileReq *pb.DeleteMiles
 }
 
 func (s *server) MilestoneCompletion(ctx context.Context, milCompReq *pb.MilestoneCompletionRequest) (*pb.MilestoneCompletionResponse, error) {
-	//Update milestone status
+
 	find := bson.M{"milestoneid": milCompReq.Milestoneid}
+	//TODO toggle milestone completion
+	currMilestone := &pb.MilestoneModel{}
+	err := MileC.Operation.Find(find).One(currMilestone)
+	if err != nil {
+		log.Println("Failed to find Milestone with the given MilestoneID.")
+		return &pb.MilestoneCompletionResponse{Success: false}, nil
+	}
+	//Update milestone status
 	update := bson.M{"$set": bson.M{"done": true}}
-	err := MileC.Operation.Update(find, update)
+	if currMilestone.Done == true {
+		update = bson.M{"$set": bson.M{"done": false}}
+	}
+	err = MileC.Operation.Update(find, update)
 	if err != nil {
 		return &pb.MilestoneCompletionResponse{Success: false}, nil
 	}
@@ -290,6 +301,8 @@ func (s *server) GetAllMilestones(ctx context.Context, request *pb.GetAllMilesto
 		}
 	}
 
+	//TODO, add success boolean??
+	response.Success = true
 	return &response, nil
 }
 
@@ -489,7 +502,10 @@ func (s *server) InviteUser(ctx context.Context, invite *pb.InviteUserRequest) (
 	invites.Invitations = append(invites.Invitations, invite.Senderemail+" invited you to join "+projTitle.Title)
 	invites.ProjectInvites = append(invites.ProjectInvites, invite.Xid)
 	invites.Notifications = append([]string{invite.Senderemail + " invited you to join " + projTitle.Title}, invites.Notifications...)
-	err = UserC.Operation.Update(findID, bson.M{"$set": bson.M{"invitations": invites.Invitations, "projectinvites": invites.ProjectInvites}})
+	err = UserC.Operation.Update(findID, bson.M{"$set": bson.M{"invitations": invites.Invitations,
+		"projectinvites": invites.ProjectInvites,
+		"notifications":  invites.Notifications}})
+	//TODO add notifications
 	if err != nil {
 		log.Println("Updating user's invitations failed")
 		return &pb.InviteUserResponse{Success: false}, nil
