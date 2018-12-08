@@ -107,6 +107,13 @@ service ProjectManagementAPI {
             body: "*"
         };
     }
+
+    rpc DisplayInvitations (DisplayInvitationsRequest) returns (DisplayInvitationsResponse) {
+        option (google.api.http) = {
+            post: "/displayinvitations"
+            body: "*"
+        };
+    }
 }
 
 message MilestoneModel {
@@ -265,4 +272,14 @@ message RemoveNotificationRequest {
 
 message RemoveNotificationResponse{
     bool success = 1;
+}
+
+message DisplayInvitationsRequest {
+    string email = 1;
+}
+
+message DisplayInvitationsResponse {
+    bool success = 1;
+    repeated string invitations = 2;
+    repeated string xid = 3;
 }

@@ -708,3 +708,19 @@ func (s *server) RemoveNotification(ctx context.Context, nReq *pb.RemoveNotifica
 
 	return &pb.RemoveNotificationResponse{Success: true}, nil
 }
+
+func (s *server) DisplayInvitations(ctx context.Context, request *pb.DisplayInvitationsRequest) (*pb.DisplayInvitationsResponse, error) {
+	userInvitations := &user{}
+	findID := bson.M{"email": request.Email}
+	err := UserC.Operation.Find(findID).One(userInvitations)
+	if err != nil {
+		return &pb.DisplayInvitationsResponse{Success: true}, nil
+	}
+
+	var response pb.DisplayInvitationsResponse
+	response.Invitations = userInvitations.Invitations
+	response.Success = true
+	response.Xid = userInvitations.ProjectInvites
+
+	return &response, nil
+}
