@@ -56,6 +56,11 @@ type projectA struct {
 	UnpinnedAnnouncements []string `json:"unpinnedannouncements" bson:"unpinnedannouncements"`
 }
 
+// Struct to handle add user
+type project struct {
+	JoinRequests []string `json:"joinrequests" bson:"joinrequests"`
+}
+
 //Struct to handle Milestone Weight
 type weightM struct {
 	Weight int32 `json:"weight" bson:"weight"`
@@ -353,6 +358,29 @@ func (s *server) AddUser(ctx context.Context, addUReq *pb.AddUserRequest) (*pb.A
 				return &pb.AddUserResponse{Success: false}, nil
 			}
 		}
+	}
+
+	// Remove user from joinrequests after adding
+	joinRequests := &project{}
+	err = ProjC.Operation.Find(findId).One(joinRequests)
+	if err != nil {
+		return &pb.AddUserResponse{Success: false}, nil
+	}
+
+	for i, usr := range joinRequests.JoinRequests {
+		if usr == addUReq.Email {
+			joinRequests.JoinRequests[i] = joinRequests.JoinRequests[len(joinRequests.JoinRequests)-1]
+			joinRequests.JoinRequests = joinRequests.JoinRequests[:len(joinRequests.JoinRequests)-1]
+			break
+		}
+	}
+
+	//Update the database
+	update = bson.M{"$set": bson.M{"joinrequests": joinRequests.JoinRequests}}
+	err = ProjC.Operation.Update(findId, update)
+	if err != nil {
+		log.Println("Projectupdate failed")
+		return &pb.AddUserResponse{Success: false}, nil
 	}
 
 	//Add user to project and update
