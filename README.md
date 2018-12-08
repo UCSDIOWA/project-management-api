@@ -17,7 +17,7 @@ run the server.go file as follows,
 This will execute the server file.
 
 ## Endpoints ##
-Each endpoint expects to receive specific fields to process a request. The following are the expectations for each endpoint and the resopnse
+Each endpoint expects to receive specific fields to process a request. The following are the expectations for each endpoint and the response. The API link is https://tea-project-management-api.herokuapp.com/. Note that each endpoint only accepts POST requests, so the link will only display a "Not Found" message since GET requests aren't supported.
 
 | Endpoint | Request | Response |
 |:--------:|---------|----------|
@@ -44,7 +44,3 @@ These are the outlines of some of the custom types which are returned.
 |:--------:|---------|
 | MilestoneModel   | string milestoneid = 1;<br>string title = 2;<br>string description = 3;<br>repeated string users = 4;<br>int32 weight = 5;<br>bool done = 6; |
 | UserTuple   | string email = 1;<br>string firstname = 2; |
-
-
-Author: Samuel Blake
-Last Updated: 12/6/2018
