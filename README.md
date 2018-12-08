@@ -9,7 +9,7 @@ This repository handles requests from the login page of our website.
 
 ## Program Execution ##
 Make sure [mgo](https://github.com/globalsign/mgo), [glog](https://github.com/golang/glog), [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway), 
-[cors](https://github.com/rs/cors), and [grpc](https://godoc.org/google.golang.org/grpc) are installed in your golang environemnt. To execute the program 
+[cors](https://github.com/rs/cors), and [grpc](https://godoc.org/google.golang.org/grpc) are installed in your golang environment. To execute the program 
 run the server.go file as follows,
 
 	go run server.go
