@@ -17,7 +17,7 @@ run the server.go file as follows,
 This will execute the server file.
 
 ## Endpoints ##
-Each endpoint expects to receive specific fields to process a request. The following are the expectations for each endpoint and the resopnse
+Each endpoint expects to receive specific fields to process a request. The following are the expectations for each endpoint and the response. The API link is (https://tea-project-management-api.herokuapp.com/). Each endpoint only accepts POST requests.
 
 | Endpoint | Request | Response |
 |:--------:|---------|----------|
