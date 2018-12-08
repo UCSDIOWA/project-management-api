@@ -631,9 +631,9 @@ func (s *server) Announcement(ctx context.Context, annReq *pb.AnnouncementReques
 	}
 	//determine whether to add the post to the top or the bottom of the announcements
 	if annReq.Pin {
-		oldAnnouncements.PinnedAnnouncements = append([]string{annReq.Poster + " says " + annReq.Message}, oldAnnouncements.PinnedAnnouncements...)
+		oldAnnouncements.PinnedAnnouncements = append([]string{annReq.Message}, oldAnnouncements.PinnedAnnouncements...)
 	} else {
-		oldAnnouncements.UnpinnedAnnouncements = append([]string{annReq.Poster + " says " + annReq.Message}, oldAnnouncements.UnpinnedAnnouncements...)
+		oldAnnouncements.UnpinnedAnnouncements = append([]string{annReq.Message}, oldAnnouncements.UnpinnedAnnouncements...)
 	}
 
 	//update the database
