@@ -1,5 +1,3 @@
-This repository contains the necessary code for all endpoints pertaining to project management. This means anything that can occur from the project dashboard page is handled by the endpoints here. All database collections are modified from this API, although not necessarily by every endpoint. The endpoints defined in this repository are below, along with the POST Request and Response bodies as Protocol Buffers. The gRPC server runs on a server hosted on Heroku, as does the MongoDB database which stores all of our data. vendor and GoDeps are directories necessary for the server to run properly on Heroku. The protos directory contains the protocol buffer definitions and the corresponding generated pb.gw and pb Go files. 
-
 # project-management-api
 
 ## Overview ##
@@ -41,6 +39,7 @@ Each endpoint expects to receive specific fields to process a request. The follo
 
 ## Types ##
 These are the outlines of some of the custom types which are returned.
+
 | Type | Fields |
 |:--------:|---------|
 | MilestoneModel   | string milestoneid = 1;<br>string title = 2;<br>string description = 3;<br>repeated string users = 4;<br>int32 weight = 5;<br>bool done = 6; |
