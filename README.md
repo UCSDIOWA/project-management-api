@@ -44,7 +44,3 @@ These are the outlines of some of the custom types which are returned.
 |:--------:|---------|
 | MilestoneModel   | string milestoneid = 1;<br>string title = 2;<br>string description = 3;<br>repeated string users = 4;<br>int32 weight = 5;<br>bool done = 6; |
 | UserTuple   | string email = 1;<br>string firstname = 2; |
-
-
-Author: Samuel Blake
-Last Updated: 12/6/2018
