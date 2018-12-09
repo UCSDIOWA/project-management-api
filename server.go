@@ -735,13 +735,13 @@ func (s *server) UpdatePercentage(ctx context.Context, request *pb.UpdatePercent
 	}
 	//return success
 	return &pb.UpdatePercentageResponse{Success: true}, nil
-
 }
 
 func (s *server) ToggleDone(ctx context.Context, request *pb.ToggleDoneRequest) (*pb.ToggleDoneResponse, error) {
 	//toggle the done field of the project
 	findID := bson.M{"xid": request.Xid}
-	update := bson.M{"$set": bson.M{"done": !request.Prevdone}}
+	request.Prevdone = !request.Prevdone
+	update := bson.M{"$set": bson.M{"done": request.Prevdone}}
 	err := ProjC.Operation.Update(findID, update)
 	if err != nil {
 		log.Println("Issue updating project done-ness")
@@ -749,5 +749,4 @@ func (s *server) ToggleDone(ctx context.Context, request *pb.ToggleDoneRequest) 
 	}
 	//return success
 	return &pb.ToggleDoneResponse{Success: true}, nil
-
 }
