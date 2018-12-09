@@ -5,7 +5,7 @@ This repository contains the necessary files to host restful API's using Protoco
 can be found on [protobufs Google Developers site](https://developers.google.com/protocol-buffers/docs/proto3).
 All of the endpoints are hosted using [Heroku](https://www.heroku.com). The database was implemented using [MongoDB](https://mongodb.com)
 with the help of the public MongoDB driver [mgo](https://github.com/globalsign/mgo) and is being hosted using [mLab](https://mlab.com).
-This repository handles requests from the login page of our website.
+This repository handles requests from the project dashboard and all of its components.
 
 ## Program Execution ##
 Make sure [mgo](https://github.com/globalsign/mgo), [glog](https://github.com/golang/glog), [grpc-gateway](https://github.com/grpc-ecosystem/grpc-gateway), 
