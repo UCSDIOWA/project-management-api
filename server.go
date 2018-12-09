@@ -29,6 +29,13 @@ type user struct {
 	CurrentProjects []string `json:"currentprojects" bson:"currentprojects"`
 }
 
+//Struct to toggle done
+type userprojects struct {
+	Email            string   `json:"email" bson:"email"`
+	CurrentProjects  []string `json:"currentprojects" bson:"currentprojects"`
+	PreviousProjects []string `json:"previousprojects" bson:"previousprojects"`
+}
+
 //Struct to handle users in projects
 type projectU struct {
 	Title string   `json:"title" bson:"title"`
@@ -110,7 +117,8 @@ func main() {
 
 func startGRPC() error {
 	// Host mongo server
-	m, err := mgo.Dial("mongodb://tea:cse110IOWA@ds159263.mlab.com:59263/tea")
+	// m, err := mgo.Dial("mongodb://tea:cse110IOWA@ds159263.mlab.com:59263/tea")
+	m, err := mgo.Dial("127.0.0.1:27017")
 	if err != nil {
 		log.Fatalf("Could not connect to the MongoDB server: %v", err)
 	}
@@ -738,9 +746,63 @@ func (s *server) UpdatePercentage(ctx context.Context, request *pb.UpdatePercent
 }
 
 func (s *server) ToggleDone(ctx context.Context, request *pb.ToggleDoneRequest) (*pb.ToggleDoneResponse, error) {
+	if request.Prevdone == true {
+		request.Prevdone = false
+
+		var users []userprojects
+		iter := UserC.Operation.Find(nil).Iter()
+		err := iter.All(&users)
+		if err != nil {
+			return &pb.ToggleDoneResponse{Success: false}, nil
+		}
+
+		for i := range users {
+			for j, xid := range users[i].PreviousProjects {
+				if xid == request.Xid {
+					users[i].PreviousProjects = append(users[i].PreviousProjects[:j], users[i].PreviousProjects[j+1:]...)
+					users[i].CurrentProjects = append(users[i].CurrentProjects, xid)
+
+					find := bson.M{"email": users[i].Email}
+					update := bson.M{"$set": bson.M{"currentprojects": users[i].CurrentProjects, "previousprojects": users[i].PreviousProjects}}
+					err := UserC.Operation.Update(find, update)
+					if err != nil {
+						log.Println("Issue updating project done-ness")
+						return &pb.ToggleDoneResponse{Success: false}, nil
+					}
+				}
+			}
+		}
+
+	} else {
+		request.Prevdone = true
+
+		var users []userprojects
+		iter := UserC.Operation.Find(nil).Iter()
+		err := iter.All(&users)
+		if err != nil {
+			return &pb.ToggleDoneResponse{Success: false}, nil
+		}
+
+		for i := range users {
+			for j, xid := range users[i].CurrentProjects {
+				if xid == request.Xid {
+					users[i].CurrentProjects = append(users[i].CurrentProjects[:j], users[i].CurrentProjects[j+1:]...)
+					users[i].PreviousProjects = append(users[i].PreviousProjects, xid)
+
+					find := bson.M{"email": users[i].Email}
+					update := bson.M{"$set": bson.M{"currentprojects": users[i].CurrentProjects, "previousprojects": users[i].PreviousProjects}}
+					err := UserC.Operation.Update(find, update)
+					if err != nil {
+						log.Println("Issue updating project done-ness")
+						return &pb.ToggleDoneResponse{Success: false}, nil
+					}
+				}
+			}
+		}
+	}
+
 	//toggle the done field of the project
 	findID := bson.M{"xid": request.Xid}
-	request.Prevdone = !request.Prevdone
 	update := bson.M{"$set": bson.M{"done": request.Prevdone}}
 	err := ProjC.Operation.Update(findID, update)
 	if err != nil {
