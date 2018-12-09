@@ -36,6 +36,9 @@ Each endpoint expects to receive specific fields to process a request. The follo
 | transferleader | string xid = 1;<br>string newleader = 2; | bool success = 1; |
 | announcement | string xid = 1;<br>string poster = 2;<br>string message = 3;<br>bool pin = 4; | bool success = 1; |
 | removenotification | string notification = 1;<br>string user = 2; | bool success = 1; |
+| toggledone | string xid = 1;<br>bool prevdone = 2; | bool success = 1; |
+| updatepercentage | string xid = 1;<br>string percent = 2; | bool success = 1; |
+
 
 ## Types ##
 These are the outlines of some of the custom types which are returned.
