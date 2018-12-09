@@ -714,7 +714,7 @@ func (s *server) DisplayInvitations(ctx context.Context, request *pb.DisplayInvi
 	findID := bson.M{"email": request.Email}
 	err := UserC.Operation.Find(findID).One(userInvitations)
 	if err != nil {
-		return &pb.DisplayInvitationsResponse{Success: true}, nil
+		return &pb.DisplayInvitationsResponse{Success: false}, nil
 	}
 
 	var response pb.DisplayInvitationsResponse
@@ -723,4 +723,31 @@ func (s *server) DisplayInvitations(ctx context.Context, request *pb.DisplayInvi
 	response.Xid = userInvitations.ProjectInvites
 
 	return &response, nil
+}
+
+func (s *server) UpdatePercentage(ctx context.Context, request *pb.UpdatePercentageRequest) (*pb.UpdatePercentageResponse, error) {
+	//update percentage done field
+	findID := bson.M{"xid": request.Xid}
+	update := bson.M{"$set": bson.M{"percentdone": request.Percent}}
+	err := ProjC.Operation.Update(findID, update)
+	if err != nil {
+		return &pb.UpdatePercentageResponse{Success: false}, nil
+	}
+	//return success
+	return &pb.UpdatePercentageResponse{Success: true}, nil
+
+}
+
+func (s *server) ToggleDone(ctx context.Context, request *pb.ToggleDoneRequest) (*pb.ToggleDoneResponse, error) {
+	//toggle the done field of the project
+	findID := bson.M{"xid": request.Xid}
+	update := bson.M{"$set": bson.M{"done": !request.Prevdone}}
+	err := ProjC.Operation.Update(findID, update)
+	if err != nil {
+		log.Println("Issue updating project done-ness")
+		return &pb.ToggleDoneResponse{Success: false}, nil
+	}
+	//return success
+	return &pb.ToggleDoneResponse{Success: true}, nil
+
 }

@@ -114,6 +114,20 @@ service ProjectManagementAPI {
             body: "*"
         };
     }
+
+    rpc UpdatePercentage (UpdatePercentageRequest) returns (UpdatePercentageResponse) {
+        option (google.api.http) = {
+            post: "/updatepercentage"
+            body: "*"
+        };
+    }
+
+    rpc ToggleDone (ToggleDoneRequest) returns (ToggleDoneResponse) {
+        option (google.api.http) = {
+            post: "/toggledone"
+            body: "*"
+        };
+    }
 }
 
 message MilestoneModel {
@@ -283,3 +297,21 @@ message DisplayInvitationsResponse {
     repeated string invitations = 2;
     repeated string xid = 3;
 }
+
+message UpdatePercentageRequest {
+    string xid = 1;
+    int32 percent = 3;
+}
+
+message UpdatePercentageResponse {
+    bool success = 1;
+} 
+
+message ToggleDoneRequest {
+    string xid = 1;
+    bool prevdone = 2;
+}
+
+message ToggleDoneResponse {
+    bool success = 1;
+} 
